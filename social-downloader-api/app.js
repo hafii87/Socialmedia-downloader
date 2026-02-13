@@ -18,10 +18,22 @@ const PORT = process.env.PORT || 3000;
 // ──────────────────────────────────────────────────────────────────────
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Allow cross-origin resource sharing for downloads
+}));
+
+// CORS middleware - CRITICAL FIX
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  credentials: true
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    process.env.CORS_ORIGIN || '*'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Body parsing middleware
@@ -35,24 +47,34 @@ app.use((req, res, next) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────
-// ROUTES
+// STATIC FILES & FRONTEND
 // ──────────────────────────────────────────────────────────────────────
 
-// Welcome endpoint
-/*
-app.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Social Downloader API is running',
-    version: '1.0.0',
-    endpoints: {
-      analyze: 'POST /api/v1/analyze',
-      download: 'POST /api/v1/download',
-      status: 'GET /api/v1/status'
+// Serve frontend from public directory
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    // Set proper cache headers for HTML/JS/CSS
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=3600');
     }
-  });
-});
-*/
+  }
+}));
+
+// Serve downloaded files with proper headers
+app.use('/downloads', express.static(path.join(__dirname, 'downloads'), {
+  setHeaders: (res, filePath) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Content-Disposition', 'attachment'); // Force download
+  }
+}));
+
+// ──────────────────────────────────────────────────────────────────────
+// ROUTES
+// ──────────────────────────────────────────────────────────────────────
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -63,22 +85,13 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, 'public')));
-
-
 // API routes
 app.use('/api/v1', downloaderRoutes);
 
-// Serve downloaded files
-app.use('/downloads', express.static(path.join(__dirname, 'downloads'), {
-  setHeaders: (res, path) => {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-  }
-}));
-
+// Serve index.html for root path (SPA)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // ──────────────────────────────────────────────────────────────────────
 // 404 HANDLER
@@ -107,6 +120,7 @@ app.listen(PORT, () => {
   logger.info(`🚀 Server running on http://localhost:${PORT}`);
   logger.info(`📝 Logs stored in ./logs directory`);
   logger.info(`⬇️  Downloads stored in ./downloads directory`);
+  logger.info(`🌐 Open http://localhost:${PORT} in your browser`);
 });
 
 // Handle unhandled promise rejections

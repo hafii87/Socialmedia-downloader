@@ -1,4 +1,4 @@
-const { spawn } = require('child_process');
+const ytdl = require('ytdl-core');
 const path = require('path');
 const fs = require('fs');
 const logger = require('../Logger/logger');
@@ -10,37 +10,6 @@ if (!fs.existsSync(DOWNLOAD_DIR)) {
   fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
   logger.info(`Created downloads directory at ${DOWNLOAD_DIR}`);
 }
-
-/**
- * Execute yt-dlp command
- */
-const executeYtDlp = (args) => {
-  return new Promise((resolve, reject) => {
-    const ytdlp = spawn('yt-dlp', args);
-    let stdout = '';
-    let stderr = '';
-
-    ytdlp.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
-
-    ytdlp.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    ytdlp.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(stderr || 'yt-dlp command failed'));
-      } else {
-        resolve(stdout);
-      }
-    });
-
-    ytdlp.on('error', (err) => {
-      reject(new Error(`Failed to start yt-dlp: ${err.message}. Make sure yt-dlp is installed system-wide.`));
-    });
-  });
-};
 
 /**
  * Detect the platform from URL
@@ -66,51 +35,51 @@ const getInfo = async (url) => {
   try {
     logger.info(`Fetching metadata for URL: ${url}`);
     
-    const args = [
-      '--dump-json',
-      '--no-warnings',
-      '--skip-download',
-      '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      url
-    ];
-
-    const output = await executeYtDlp(args);
-    const info = JSON.parse(output);
     const platform = detectPlatform(url);
     
-    logger.info(`Successfully fetched metadata for ${platform}: ${info.title}`);
+    // Currently only YouTube is fully supported
+    if (platform !== 'youtube') {
+      throw new Error(`Platform '${platform}' is not yet fully supported. Currently only YouTube is supported.`);
+    }
+
+    // Validate YouTube URL
+    if (!ytdl.validateURL(url)) {
+      throw new Error('Invalid or unsupported YouTube URL');
+    }
+
+    const info = await ytdl.getInfo(url);
+    
+    logger.info(`Successfully fetched metadata for ${platform}: ${info.videoDetails.title}`);
+
+    // Extract format information
+    const formats = ytdl.filterFormats(info.formats, 'videoandaudio')
+      .concat(ytdl.filterFormats(info.formats, 'video'))
+      .slice(0, 5); // Get top 5 formats
 
     return {
       success: true,
       platform,
-      title: info.title || 'Untitled',
-      duration: info.duration || null,
-      durationFormatted: formatDuration(info.duration),
-      thumbnail: info.thumbnail || null,
-      uploader: info.uploader || info.channel || 'Unknown',
-      uploadDate: info.upload_date || null,
-      description: info.description || null,
-      webpage_url: info.webpage_url || url,
-      formats: (info.formats || []).map(f => ({
-        quality: f.format_note || (f.height ? `${f.height}p` : 'unknown'),
-        ext: f.ext || 'unknown',
-        filesize: f.filesize || null,
+      title: info.videoDetails.title || 'Untitled',
+      duration: info.videoDetails.lengthSeconds || null,
+      durationFormatted: formatDuration(parseInt(info.videoDetails.lengthSeconds)),
+      thumbnail: info.videoDetails.thumbnail?.thumbnails?.[0]?.url || null,
+      uploader: info.videoDetails.author?.name || 'Unknown',
+      uploadDate: info.videoDetails.publishDate || null,
+      description: info.videoDetails.description || null,
+      webpage_url: url,
+      formats: formats.map(f => ({
+        quality: f.qualityLabel || `${f.height}p` || 'unknown',
+        ext: f.container || 'unknown',
+        filesize: f.contentLength || null,
         fps: f.fps || null,
-        vcodec: f.vcodec || null,
-        acodec: f.acodec || null
-      })).filter(f => f.ext !== 'mhtml'),
+        vcodec: f.videoCodec || null,
+        acodec: f.audioCodec || null
+      })),
       isPlayable: true
     };
   } catch (error) {
     logger.error(`Failed to fetch info for ${url}:`, error);
-    
-    let errorMessage = error.message;
-    
-    if (errorMessage.includes('Failed to start yt-dlp')) {
-      errorMessage = 'yt-dlp is not installed. Install it with: pip install yt-dlp';
-    }
-    
-    throw new Error(errorMessage);
+    throw new Error(error.message || 'Failed to fetch video information');
   }
 };
 
@@ -121,61 +90,78 @@ const downloadMedia = async (url) => {
   try {
     logger.info(`Starting download for URL: ${url}`);
     
-    const info = await getInfo(url);
+    const platform = detectPlatform(url);
     
-    if (!info.success) {
-      throw new Error('Could not retrieve media information');
+    if (platform !== 'youtube') {
+      throw new Error(`Platform '${platform}' is not yet fully supported. Currently only YouTube is supported.`);
     }
 
-    const safeTitle = (info.title || 'video')
+    if (!ytdl.validateURL(url)) {
+      throw new Error('Invalid or unsupported YouTube URL');
+    }
+
+    const info = await ytdl.getInfo(url);
+    const title = info.videoDetails.title;
+    
+    // Sanitize filename
+    const safeTitle = (title || 'video')
       .replace(/[^a-zA-Z0-9_\-]/g, '_')
       .replace(/_+/g, '_')
       .slice(0, 80);
     
-    const outputTemplate = path.join(DOWNLOAD_DIR, `${safeTitle}-%(id)s.%(ext)s`);
-    logger.info(`Downloading to: ${outputTemplate}`);
+    const filename = `${safeTitle}_${Date.now()}.mp4`;
+    const filePath = path.join(DOWNLOAD_DIR, filename);
+    
+    logger.info(`Downloading to: ${filePath}`);
 
-    const args = [
-      '-o', outputTemplate,
-      '--no-playlist',
-      '--restrict-filenames',
-      '--quiet',
-      '--no-warnings',
-      '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      url
-    ];
+    // Get the best format
+    const format = ytdl.chooseFormat(info.formats, {
+      quality: 'highest',
+      filter: 'videoandaudio'
+    });
 
-    await executeYtDlp(args);
+    // Download the video
+    return new Promise((resolve, reject) => {
+      const stream = ytdl.downloadFromInfo(info, { format });
+      const writeStream = fs.createWriteStream(filePath);
 
-    const allFiles = fs.readdirSync(DOWNLOAD_DIR);
-    const downloadedFile = allFiles.find(f => f.includes(safeTitle));
+      stream.on('error', (err) => {
+        logger.error(`Stream error: ${err.message}`);
+        fs.unlink(filePath, () => {}); // Clean up partial file
+        reject(new Error(`Download failed: ${err.message}`));
+      });
 
-    if (!downloadedFile) {
-      throw new Error('File not found after download');
-    }
+      writeStream.on('error', (err) => {
+        logger.error(`Write stream error: ${err.message}`);
+        fs.unlink(filePath, () => {}); // Clean up partial file
+        reject(new Error(`File write failed: ${err.message}`));
+      });
 
-    const filePath = path.join(DOWNLOAD_DIR, downloadedFile);
-    const fileSize = fs.statSync(filePath).size;
+      writeStream.on('finish', () => {
+        const fileSize = fs.statSync(filePath).size;
+        logger.info(`Download complete: ${filename} (${fileSize} bytes)`);
 
-    logger.info(`Download complete: ${downloadedFile} (${fileSize} bytes)`);
+        resolve({
+          success: true,
+          filename,
+          filepath: filePath,
+          downloadUrl: `/downloads/${filename}`,
+          filesize: fileSize,
+          platform,
+          title
+        });
+      });
 
-    return {
-      success: true,
-      filename: downloadedFile,
-      filepath: filePath,
-      downloadUrl: `/downloads/${downloadedFile}`,
-      filesize: fileSize,
-      platform: info.platform,
-      title: info.title
-    };
+      stream.pipe(writeStream);
+    });
   } catch (error) {
     logger.error(`Download failed for ${url}:`, error);
-    throw new Error(error.message);
+    throw new Error(error.message || 'Download failed');
   }
 };
 
 /**
- * Format duration
+ * Format duration (seconds to HH:MM:SS)
  */
 const formatDuration = (seconds) => {
   if (!seconds) return null;

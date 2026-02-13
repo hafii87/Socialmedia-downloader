@@ -1,0 +1,17 @@
+2026-02-13 16:46:12 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 16:46:12 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 16:46:12 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 16:46:12 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 16:46:20 [INFO] GET /
+2026-02-13 16:46:23 [INFO] GET /favicon.ico
+2026-02-13 16:46:23 [WARN] 404 - Route not found: GET /favicon.ico
+2026-02-13 16:53:31 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 16:53:31 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 16:53:31 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 16:53:31 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 16:56:01 [INFO] POST /
+2026-02-13 16:56:01 [WARN] 404 - Route not found: POST /
+2026-02-13 16:56:23 [INFO] POST /
+2026-02-13 16:56:23 [WARN] 404 - Route not found: POST /
+2026-02-13 16:56:31 [INFO] POST /api
+2026-02-13 16:56:31 [WARN] 404 - Route not found: POST /api
