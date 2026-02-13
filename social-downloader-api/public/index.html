@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Downloader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .supported-platforms {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .platform-badge {
+            background: #f0f0f0;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-analyze {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+
+        .video-info {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .video-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            min-width: 100px;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .download-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .download-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .thumbnail {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Social Media Downloader</h1>
+        <p class="subtitle">Download videos from YouTube, Instagram, TikTok, and more!</p>
+
+        <div class="supported-platforms">
+            <span class="platform-badge">YouTube</span>
+            <span class="platform-badge">Instagram</span>
+            <span class="platform-badge">TikTok</span>
+            <span class="platform-badge">Twitter/X</span>
+            <span class="platform-badge">Facebook</span>
+            <span class="platform-badge">Reddit</span>
+        </div>
+
+        <div class="input-group">
+            <label for="videoUrl">Video URL</label>
+            <input 
+                type="text" 
+                id="videoUrl" 
+                placeholder="Paste your video URL here..."
+                value="https://www.youtube.com/watch?v=jNQXAC9IVRw"
+            >
+        </div>
+
+        <div class="button-group">
+            <button class="btn-analyze" onclick="analyzeVideo()">
+                📊 Analyze
+            </button>
+            <button class="btn-download" onclick="downloadVideo()">
+                ⬇️ Download
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <div class="result" id="result"></div>
+
+        <div class="video-info" id="videoInfo"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        async function analyzeVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            
+            if (!url) {
+                showResult('Please enter a video URL', 'error');
+                return;
+            }
+
+            showLoading(true);
+            hideResult();
+            hideVideoInfo();
+
+            try {
+                const response = await fetch(`${API_URL}/api/v1/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayVideoInfo(data.data);
+                    showResult('Video analyzed successfully!', 'success');
+                } else {
+                    showResult(data.error || 'Failed to analyze video', 'error');
+                }
+            } catch (error) {
+                showResult('Network error. Make sure the server is running.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function downloadVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            
+            if (!url) {
+                showResult('Please enter a video URL', 'error');
+                return;
+            }
+
+            showLoading(true);
+            hideResult();
+            hideVideoInfo();
+
+            try {
+                const response = await fetch(`${API_URL}/api/v1/download`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayDownloadInfo(data.data);
+                    showResult('Download complete! 🎉', 'success');
+                } else {
+                    showResult(data.error || 'Failed to download video', 'error');
+                }
+            } catch (error) {
+                showResult('Network error. Make sure the server is running.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayVideoInfo(info) {
+            const videoInfoDiv = document.getElementById('videoInfo');
+            
+            let html = '<h3>📹 Video Information</h3>';
+            
+            if (info.thumbnail) {
+                html += `<img src="${info.thumbnail}" alt="Thumbnail" class="thumbnail">`;
+            }
+            
+            html += `
+                <div class="info-item">
+                    <span class="info-label">Title:</span>
+                    <span class="info-value">${info.title}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Platform:</span>
+                    <span class="info-value">${info.platform}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Uploader:</span>
+                    <span class="info-value">${info.uploader}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Duration:</span>
+                    <span class="info-value">${info.durationFormatted || 'N/A'}</span>
+                </div>
+            `;
+
+            videoInfoDiv.innerHTML = html;
+            videoInfoDiv.style.display = 'block';
+        }
+
+        function displayDownloadInfo(info) {
+            const videoInfoDiv = document.getElementById('videoInfo');
+            
+            const fileSizeMB = (info.filesize / (1024 * 1024)).toFixed(2);
+            
+            let html = `
+                <h3>✅ Download Ready!</h3>
+                <div class="info-item">
+                    <span class="info-label">Title:</span>
+                    <span class="info-value">${info.title}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Platform:</span>
+                    <span class="info-value">${info.platform}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Filename:</span>
+                    <span class="info-value">${info.filename}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Size:</span>
+                    <span class="info-value">${fileSizeMB} MB</span>
+                </div>
+                <a href="${API_URL}${info.downloadUrl}" class="download-link" download>
+                    📥 Download File
+                </a>
+            `;
+
+            videoInfoDiv.innerHTML = html;
+            videoInfoDiv.style.display = 'block';
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+
+        function hideResult() {
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function hideVideoInfo() {
+            document.getElementById('videoInfo').style.display = 'none';
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
