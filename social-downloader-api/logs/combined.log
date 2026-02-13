@@ -936,3 +936,19 @@
 2026-02-13 17:54:28 [INFO] ⬇️  Downloads stored in ./downloads directory
 2026-02-13 17:54:28 [INFO] 🌐 Open http://localhost:3000 in your browser
 2026-02-13 17:54:30 [INFO] GET /api/v1/status
+2026-02-13 18:04:24 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 18:04:24 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 18:04:24 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 18:04:24 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 18:04:28 [INFO] GET /
+2026-02-13 18:06:45 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 18:06:45 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 18:06:45 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 18:06:45 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 18:06:52 [INFO] GET /
+2026-02-13 18:10:54 [INFO] GET /
+2026-02-13 18:15:53 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 18:15:53 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 18:15:53 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 18:15:53 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 18:16:13 [INFO] GET /

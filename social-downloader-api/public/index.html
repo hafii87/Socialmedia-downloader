@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Downloader</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f7f7f7; }
+    .container { max-width: 500px; margin: auto; background: #fff; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+    h1 { text-align: center; }
+    input, button { width: 100%; padding: 0.7em; margin: 0.5em 0; border-radius: 4px; border: 1px solid #ccc; }
+    .result, .error { margin-top: 1em; padding: 1em; border-radius: 4px; }
+    .result { background: #e6ffe6; border: 1px solid #b2ffb2; }
+    .error { background: #ffe6e6; border: 1px solid #ffb2b2; }
+    img { max-width: 100%; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Social Downloader</h1>
+    <input type="text" id="urlInput" placeholder="Paste social media URL here...">
+    <button id="analyzeBtn" onclick="analyzeUrl()" disabled>Analyze</button>
+    <button id="downloadBtn" onclick="downloadUrl()" style="display:none; margin-top:0.5em;">Download</button>
+    <div id="output"></div>
+  </div>
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    let lastAnalyzedUrl = '';
+    let isAnalyzing = false;
+    let isDownloading = false;
+
+    urlInput.addEventListener('input', function() {
+      analyzeBtn.disabled = !this.value.trim();
+      downloadBtn.style.display = 'none';
+      document.getElementById('output').innerHTML = '';
+      lastAnalyzedUrl = '';
+    });
+
+    async function analyzeUrl() {
+      if (isAnalyzing) return;
+      isAnalyzing = true;
+      analyzeBtn.disabled = true;
+      downloadBtn.style.display = 'none';
+      const url = urlInput.value.trim();
+      const output = document.getElementById('output');
+      output.innerHTML = '<div>Analyzing...</div>';
+      if (!url) {
+        output.innerHTML = '<div class="error">Please enter a URL.</div>';
+        isAnalyzing = false;
+        analyzeBtn.disabled = false;
+        return;
+      }
+      try {
+        const res = await fetch('/api/v1/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Unknown error');
+        const info = data.data;
+        lastAnalyzedUrl = url;
+        output.innerHTML = `
+          <div class="result">
+            <strong>Platform:</strong> ${info.platform}<br>
+            <strong>Title:</strong> ${info.title}<br>
+            <strong>Uploader:</strong> ${info.uploader}<br>
+            <strong>Duration:</strong> ${info.durationFormatted || '-'}<br>
+            <strong>Description:</strong> ${info.description || '-'}<br>
+            <strong>Thumbnail:</strong><br>
+            ${info.thumbnail ? `<img src="${info.thumbnail}" alt="Thumbnail">` : '-'}<br>
+          </div>
+        `;
+        downloadBtn.style.display = 'inline-block';
+      } catch (err) {
+        output.innerHTML = `<div class="error">${err.message}</div>`;
+        downloadBtn.style.display = 'none';
+      }
+      isAnalyzing = false;
+      analyzeBtn.disabled = !urlInput.value.trim();
+    }
+
+    async function downloadUrl() {
+      if (isDownloading) return;
+      isDownloading = true;
+      downloadBtn.disabled = true;
+      const url = lastAnalyzedUrl || urlInput.value.trim();
+      const output = document.getElementById('output');
+      output.innerHTML += '<div>Downloading...</div>';
+      try {
+        const res = await fetch('/api/v1/download', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Unknown error');
+        const link = data.data.downloadUrl;
+        output.innerHTML += `<div class="result"><a href="${link}" download>Click here to download</a></div>`;
+      } catch (err) {
+        output.innerHTML += `<div class="error">${err.message}</div>`;
+      }
+      isDownloading = false;
+      downloadBtn.disabled = false;
+    }
+  </script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const ytdl = require('@distube/ytdl-core');
 const path = require('path');
 const fs = require('fs');
 const { Readable } = require('stream');
@@ -105,46 +106,40 @@ const getInfo = async (url) => {
 const downloadMedia = async (url) => {
   try {
     logger.info(`Starting download for URL: ${url}`);
-    
     const platform = detectPlatform(url);
-    
     if (platform !== 'youtube') {
       throw new Error(`Platform '${platform}' is not yet fully supported. Currently only YouTube is supported.`);
     }
-
-    // First get the metadata
+    // Get metadata
     const metadata = await getInfo(url);
     const title = metadata.title || 'video';
-    
     // Sanitize filename
     const safeTitle = (title || 'video')
       .replace(/[^a-zA-Z0-9_\-]/g, '_')
       .replace(/_+/g, '_')
       .slice(0, 80);
-    
     const filename = `${safeTitle}_${Date.now()}.mp4`;
     const filePath = path.join(DOWNLOAD_DIR, filename);
-    
-    logger.info(`Download prepared: ${filename}`);
-
-    // Create a proper file with metadata
-    const fileContent = {
-      title: title,
-      videoId: metadata.videoId,
-      url: url,
-      thumbnail: metadata.thumbnail,
-      uploader: metadata.uploader,
-      createdAt: new Date().toISOString(),
-      status: 'ready',
-      message: 'Video metadata and download information'
-    };
-
-    // Write as JSON with proper formatting
-    fs.writeFileSync(filePath, JSON.stringify(fileContent, null, 2));
-
+    logger.info(`Downloading video to: ${filePath}`);
+    // Download video using ytdl-core
+    const videoStream = ytdl(url, { quality: 'highest', filter: 'audioandvideo' });
+    await new Promise((resolve, reject) => {
+      const writeStream = fs.createWriteStream(filePath);
+      videoStream.pipe(writeStream);
+      videoStream.on('error', (err) => {
+        logger.error(`ytdl stream error: ${err.message}`);
+        fs.unlink(filePath, () => {});
+        reject(new Error('Failed to download video stream'));
+      });
+      writeStream.on('finish', resolve);
+      writeStream.on('error', (err) => {
+        logger.error(`File write error: ${err.message}`);
+        fs.unlink(filePath, () => {});
+        reject(new Error('Failed to write video file'));
+      });
+    });
     const fileSize = fs.statSync(filePath).size;
-    logger.info(`Download file created: ${filename} (${fileSize} bytes)`);
-
+    logger.info(`Download complete: ${filename} (${fileSize} bytes)`);
     return {
       success: true,
       filename,
