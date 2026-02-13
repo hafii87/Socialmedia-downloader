@@ -318,6 +318,226 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script nonce="random-nonce-123">
+        // CONFIG
+        const API_BASE_URL = 'http://localhost:3000';
+        let currentDownloadInfo = null;
+
+        // UTILITY FUNCTIONS
+        function showLoading(show, text = 'Processing...') {
+            const loadingDiv = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = text;
+            loadingDiv.style.display = show ? 'block' : 'none';
+        }
+
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+
+        function hideResult() {
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function hideVideoInfo() {
+            document.getElementById('videoInfo').style.display = 'none';
+        }
+
+        function showProgress(show) {
+            document.getElementById('progressContainer').style.display = show ? 'block' : 'none';
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // API CALLS
+        async function analyzeVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            
+            if (!url) {
+                showResult('❌ Please enter a video URL', 'error');
+                return;
+            }
+
+            showLoading(true, 'Analyzing video...');
+            hideResult();
+            hideVideoInfo();
+
+            try {
+                console.log('Sending analyze request');
+                
+                const response = await fetch(`${API_BASE_URL}/api/v1/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+                console.log('Response:', data);
+
+                if (data.success) {
+                    displayVideoInfo(data.data);
+                    showResult('✅ Video analyzed successfully!', 'success');
+                } else {
+                    showResult(`❌ ${data.error || 'Failed to analyze video'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showResult(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function downloadVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            
+            if (!url) {
+                showResult('❌ Please enter a video URL', 'error');
+                return;
+            }
+
+            showLoading(true, 'Preparing download...');
+            hideResult();
+            hideVideoInfo();
+            showProgress(true);
+            updateProgress(0);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/download`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentDownloadInfo = data.data;
+                    displayDownloadInfo(data.data);
+                    showResult('✅ Download ready!', 'success');
+                    updateProgress(100);
+                } else {
+                    showResult(`❌ ${data.error || 'Failed to download video'}`, 'error');
+                    updateProgress(0);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showResult(`❌ Error: ${error.message}`, 'error');
+                updateProgress(0);
+            } finally {
+                showLoading(false);
+                showProgress(false);
+            }
+        }
+
+        function triggerFileDownload(downloadUrl, filename) {
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // DISPLAY FUNCTIONS
+        function displayVideoInfo(info) {
+            const videoInfoDiv = document.getElementById('videoInfo');
+            
+            let html = '<h3>📹 Video Information</h3>';
+            
+            if (info.thumbnail) {
+                html += `<img src="${info.thumbnail}" alt="Thumbnail" class="thumbnail">`;
+            }
+            
+            html += `
+                <div class="info-item">
+                    <span class="info-label">Title:</span>
+                    <span class="info-value">${escapeHtml(info.title)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Platform:</span>
+                    <span class="info-value">${escapeHtml(info.platform)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Uploader:</span>
+                    <span class="info-value">${escapeHtml(info.uploader)}</span>
+                </div>
+            `;
+
+            videoInfoDiv.innerHTML = html;
+            videoInfoDiv.style.display = 'block';
+        }
+
+        function displayDownloadInfo(info) {
+            const videoInfoDiv = document.getElementById('videoInfo');
+            
+            let fileSizeDisplay = 'N/A';
+            if (info.filesize) {
+                if (info.filesize > 1024 * 1024) {
+                    fileSizeDisplay = (info.filesize / (1024 * 1024)).toFixed(2) + ' MB';
+                } else if (info.filesize > 1024) {
+                    fileSizeDisplay = (info.filesize / 1024).toFixed(2) + ' KB';
+                } else {
+                    fileSizeDisplay = info.filesize + ' bytes';
+                }
+            }
+            
+            let html = `
+                <h3>✅ Download Ready!</h3>
+                ${info.thumbnail ? `<img src="${info.thumbnail}" alt="Thumbnail" class="thumbnail">` : ''}
+                <div class="info-item">
+                    <span class="info-label">Title:</span>
+                    <span class="info-value">${escapeHtml(info.title)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Platform:</span>
+                    <span class="info-value">${escapeHtml(info.platform)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Filename:</span>
+                    <span class="info-value">${escapeHtml(info.filename)}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Size:</span>
+                    <span class="info-value">${fileSizeDisplay}</span>
+                </div>
+                <button id="dlBtn" class="download-link">📥 Download File</button>
+            `;
+
+            videoInfoDiv.innerHTML = html;
+            videoInfoDiv.style.display = 'block';
+            
+            document.getElementById('dlBtn').addEventListener('click', function() {
+                triggerFileDownload(`${API_BASE_URL}${info.downloadUrl}`, info.filename);
+            });
+        }
+
+        // EVENT LISTENERS
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Page loaded');
+            document.getElementById('analyzeBtn').addEventListener('click', analyzeVideo);
+            document.getElementById('downloadBtn').addEventListener('click', downloadVideo);
+        });
+    </script>
 </body>
 </html>

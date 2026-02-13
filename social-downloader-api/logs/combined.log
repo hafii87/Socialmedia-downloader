@@ -923,3 +923,11 @@
 2026-02-13 17:47:29 [WARN] 404 - Route not found: GET /app.js
 2026-02-13 17:47:39 [INFO] GET /.well-known/appspecific/com.chrome.devtools.json
 2026-02-13 17:47:39 [WARN] 404 - Route not found: GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-13 17:49:41 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:49:41 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:49:41 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:49:41 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:49:44 [INFO] GET /
+2026-02-13 17:49:50 [INFO] GET /
+2026-02-13 17:49:51 [INFO] GET /favicon.ico
+2026-02-13 17:49:51 [WARN] 404 - Route not found: GET /favicon.ico
