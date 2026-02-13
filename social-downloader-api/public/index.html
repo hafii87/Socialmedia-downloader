@@ -110,22 +110,22 @@
             overflow: hidden;
         }
 
-        .btn-analyze {
+        #analyzeBtn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
-        .btn-analyze:hover:not(:disabled) {
+        #analyzeBtn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-download {
+        #downloadBtn {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
         }
 
-        .btn-download:hover:not(:disabled) {
+        #downloadBtn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
         }
@@ -213,6 +213,7 @@
         .info-value {
             color: #333;
             word-break: break-word;
+            flex: 1;
         }
 
         .download-link {
@@ -278,7 +279,7 @@
 <body>
     <div class="container">
         <h1>🎬 Social Media Downloader</h1>
-        <p class="subtitle">Download videos from social media platforms</p>
+        <p class="subtitle">Download videos from YouTube and other platforms</p>
 
         <div class="supported-platforms">
             <span class="platform-badge active">✅ YouTube</span>
@@ -294,18 +295,14 @@
             <input 
                 type="text" 
                 id="videoUrl" 
-                placeholder="Paste your video URL here..."
+                placeholder="Paste your YouTube video URL here..."
                 value="https://www.youtube.com/watch?v=jNQXAC9IVRw"
             >
         </div>
 
         <div class="button-group">
-            <button class="btn-analyze" onclick="analyzeVideo()">
-                📊 Analyze
-            </button>
-            <button class="btn-download" onclick="downloadVideo()">
-                ⬇️ Download
-            </button>
+            <button id="analyzeBtn">📊 Analyze</button>
+            <button id="downloadBtn">⬇️ Download</button>
         </div>
 
         <div class="loading" id="loading">
@@ -314,7 +311,6 @@
         </div>
 
         <div class="result" id="result"></div>
-
         <div class="video-info" id="videoInfo"></div>
 
         <div class="progress-bar-container" id="progressContainer">
@@ -322,248 +318,6 @@
         </div>
     </div>
 
-    <script>
-        // ============================================
-        // CONFIG & STATE
-        // ============================================
-        const API_BASE_URL = 'http://localhost:3000';
-        let currentDownloadInfo = null;
-
-        // ============================================
-        // UTILITY FUNCTIONS
-        // ============================================
-
-        function showLoading(show, text = 'Processing...') {
-            const loadingDiv = document.getElementById('loading');
-            const loadingText = document.getElementById('loadingText');
-            loadingText.textContent = text;
-            loadingDiv.style.display = show ? 'block' : 'none';
-        }
-
-        function showResult(message, type = 'info') {
-            const resultDiv = document.getElementById('result');
-            resultDiv.textContent = message;
-            resultDiv.className = `result ${type}`;
-            resultDiv.style.display = 'block';
-        }
-
-        function hideResult() {
-            document.getElementById('result').style.display = 'none';
-        }
-
-        function hideVideoInfo() {
-            document.getElementById('videoInfo').style.display = 'none';
-        }
-
-        function showProgress(show) {
-            document.getElementById('progressContainer').style.display = show ? 'block' : 'none';
-        }
-
-        function updateProgress(percent) {
-            document.getElementById('progressBar').style.width = percent + '%';
-        }
-
-        // ============================================
-        // API CALLS
-        // ============================================
-
-        async function analyzeVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            
-            if (!url) {
-                showResult('❌ Please enter a video URL', 'error');
-                return;
-            }
-
-            showLoading(true, 'Analyzing video...');
-            hideResult();
-            hideVideoInfo();
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/v1/analyze`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ url })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    displayVideoInfo(data.data);
-                    showResult('✅ Video analyzed successfully!', 'success');
-                } else {
-                    showResult(`❌ ${data.error || 'Failed to analyze video'}`, 'error');
-                }
-            } catch (error) {
-                console.error('Analyze error:', error);
-                showResult('❌ Network error. Is the server running on http://localhost:3000?', 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        async function downloadVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            
-            if (!url) {
-                showResult('❌ Please enter a video URL', 'error');
-                return;
-            }
-
-            showLoading(true, 'Downloading video (this may take a minute)...');
-            hideResult();
-            hideVideoInfo();
-            showProgress(true);
-            updateProgress(0);
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/v1/download`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ url })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    currentDownloadInfo = data.data;
-                    displayDownloadInfo(data.data);
-                    showResult('✅ Download ready! Click the download button below.', 'success');
-                    updateProgress(100);
-                } else {
-                    showResult(`❌ ${data.error || 'Failed to download video'}`, 'error');
-                    updateProgress(0);
-                }
-            } catch (error) {
-                console.error('Download error:', error);
-                showResult('❌ Network error. Is the server running on http://localhost:3000?', 'error');
-                updateProgress(0);
-            } finally {
-                showLoading(false);
-                showProgress(false);
-            }
-        }
-
-        function triggerFileDownload(downloadUrl, filename) {
-            // Create an invisible anchor element
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = filename; // This triggers download in the browser
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // ============================================
-        // DISPLAY FUNCTIONS
-        // ============================================
-
-        function displayVideoInfo(info) {
-            const videoInfoDiv = document.getElementById('videoInfo');
-            
-            let html = '<h3>📹 Video Information</h3>';
-            
-            if (info.thumbnail) {
-                html += `<img src="${info.thumbnail}" alt="Thumbnail" class="thumbnail">`;
-            }
-            
-            html += `
-                <div class="info-item">
-                    <span class="info-label">Title:</span>
-                    <span class="info-value">${escapeHtml(info.title)}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Platform:</span>
-                    <span class="info-value">${escapeHtml(info.platform)}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Uploader:</span>
-                    <span class="info-value">${escapeHtml(info.uploader)}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Duration:</span>
-                    <span class="info-value">${info.durationFormatted || 'N/A'}</span>
-                </div>
-                ${info.description ? `
-                <div class="info-item">
-                    <span class="info-label">Description:</span>
-                    <span class="info-value">${escapeHtml(info.description.substring(0, 150))}...</span>
-                </div>
-                ` : ''}
-            `;
-
-            videoInfoDiv.innerHTML = html;
-            videoInfoDiv.style.display = 'block';
-        }
-
-        function displayDownloadInfo(info) {
-            const videoInfoDiv = document.getElementById('videoInfo');
-            
-            const fileSizeMB = (info.filesize / (1024 * 1024)).toFixed(2);
-            
-            let html = `
-                <h3>✅ Download Ready!</h3>
-                <div class="info-item">
-                    <span class="info-label">Title:</span>
-                    <span class="info-value">${escapeHtml(info.title)}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Platform:</span>
-                    <span class="info-value">${escapeHtml(info.platform)}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Filename:</span>
-                    <span class="info-value">${escapeHtml(info.filename)}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Size:</span>
-                    <span class="info-value">${fileSizeMB} MB</span>
-                </div>
-                <button class="download-link" onclick="directDownload('${escapeHtml(info.downloadUrl)}', '${escapeHtml(info.filename)}')">
-                    📥 Download File
-                </button>
-            `;
-
-            videoInfoDiv.innerHTML = html;
-            videoInfoDiv.style.display = 'block';
-        }
-
-        function directDownload(downloadUrl, filename) {
-            triggerFileDownload(`${API_BASE_URL}${downloadUrl}`, filename);
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
-
-        // ============================================
-        // STARTUP CHECK
-        // ============================================
-
-        window.addEventListener('load', () => {
-            // Check if server is running
-            fetch(`${API_BASE_URL}/health`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('✅ Backend is running');
-                    }
-                })
-                .catch(err => {
-                    console.warn('⚠️ Backend not reachable. Make sure the server is running with: npm run dev');
-                });
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,14 @@
+2026-02-13 17:07:13 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=7M0AHBT8mFQ&pp=ygUXcHVibGljICBmb3IgZG93bmxvYWRpbmc%3D: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:07:13 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:07:43 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=8fHvEkvylmA&pp=ygUXcHVibGljICBmb3IgZG93bmxhb2RpbmfSBwkJhwoBhyohjO8%3D: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:07:43 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:08:41 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=8tyR9S67NhI: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:08:41 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:11:19 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=jNQXAC9IVRw: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:11:19 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:12:11 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=jNQXAC9IVRw: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:12:11 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:23:41 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=ZVzzVmPuWqs:
+2026-02-13 17:23:41 [ERROR] Analyze error: Could not fetch video information from any API
+2026-02-13 17:35:28 [ERROR] Failed to get video info: aborted
+2026-02-13 17:35:28 [ERROR] Download error: Failed to get video info: aborted

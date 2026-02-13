@@ -15,3 +15,911 @@
 2026-02-13 16:56:23 [WARN] 404 - Route not found: POST /
 2026-02-13 16:56:31 [INFO] POST /api
 2026-02-13 16:56:31 [WARN] 404 - Route not found: POST /api
+2026-02-13 17:05:19 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:05:19 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:05:19 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:05:19 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:05:23 [INFO] POST /health
+2026-02-13 17:05:23 [WARN] 404 - Route not found: POST /health
+2026-02-13 17:05:26 [INFO] GET /health
+2026-02-13 17:07:02 [INFO] GET /api/v1/analyze
+2026-02-13 17:07:02 [WARN] 404 - Route not found: GET /api/v1/analyze
+2026-02-13 17:07:09 [INFO] POST /api/v1/analyze
+2026-02-13 17:07:09 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=7M0AHBT8mFQ&pp=ygUXcHVibGljICBmb3IgZG93bmxvYWRpbmc%3D
+2026-02-13 17:07:09 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=7M0AHBT8mFQ&pp=ygUXcHVibGljICBmb3IgZG93bmxvYWRpbmc%3D
+2026-02-13 17:07:13 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=7M0AHBT8mFQ&pp=ygUXcHVibGljICBmb3IgZG93bmxvYWRpbmc%3D: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:07:13 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:07:40 [INFO] POST /api/v1/analyze
+2026-02-13 17:07:40 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=8fHvEkvylmA&pp=ygUXcHVibGljICBmb3IgZG93bmxhb2RpbmfSBwkJhwoBhyohjO8%3D
+2026-02-13 17:07:40 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=8fHvEkvylmA&pp=ygUXcHVibGljICBmb3IgZG93bmxhb2RpbmfSBwkJhwoBhyohjO8%3D
+2026-02-13 17:07:43 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=8fHvEkvylmA&pp=ygUXcHVibGljICBmb3IgZG93bmxhb2RpbmfSBwkJhwoBhyohjO8%3D: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:07:43 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:08:37 [INFO] POST /api/v1/analyze
+2026-02-13 17:08:37 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=8tyR9S67NhI
+2026-02-13 17:08:37 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=8tyR9S67NhI
+2026-02-13 17:08:41 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=8tyR9S67NhI: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:08:41 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:11:15 [INFO] POST /api/v1/analyze
+2026-02-13 17:11:15 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+2026-02-13 17:11:15 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+2026-02-13 17:11:19 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=jNQXAC9IVRw: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:11:19 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:11:57 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:11:57 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:11:57 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:11:57 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:12:07 [INFO] POST /api/v1/analyze
+2026-02-13 17:12:07 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+2026-02-13 17:12:07 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+2026-02-13 17:12:11 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=jNQXAC9IVRw: Could not extract functions {"stack":"Error: Could not extract functions\n    at E:\\Social-downloader\\node_modules\\ytdl-core\\lib\\sig.js:20:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"}
+2026-02-13 17:12:11 [ERROR] Analyze error: Could not extract functions
+2026-02-13 17:13:12 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:13:12 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:13:12 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:13:12 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:16:19 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:16:19 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:16:19 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:16:19 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:16:29 [INFO] POST /api/v1/analyze
+2026-02-13 17:16:29 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+2026-02-13 17:16:29 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+2026-02-13 17:16:30 [INFO] Successfully fetched metadata for youtube: undefined
+2026-02-13 17:17:14 [INFO] POST /api/v1/analyze
+2026-02-13 17:17:14 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:17:14 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:17:15 [INFO] Successfully fetched metadata for youtube: undefined
+2026-02-13 17:19:26 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:19:26 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:19:26 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:19:26 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:20:14 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:20:14 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:20:14 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:20:14 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:20:22 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:20:22 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:20:22 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:20:22 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:20:29 [INFO] POST /api/v1/analyze
+2026-02-13 17:20:29 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:20:29 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:20:31 [INFO] Successfully fetched metadata for youtube: undefined
+2026-02-13 17:21:51 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:21:51 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:21:51 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:21:51 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:21:56 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:21:56 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:21:56 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:21:56 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:22:03 [INFO] POST /api/v1/analyze
+2026-02-13 17:22:03 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:22:03 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:22:05 [INFO] Full play-dl info object: {
+  "LiveStreamData": {
+    "isLive": false,
+    "dashManifestUrl": null,
+    "hlsManifestUrl": null
+  },
+  "html5player": "https://www.youtube.com/s/player/1798f86c/player_es6.vflset/en_US/base.js",
+  "format": [
+    {
+      "itag": 18,
+      "url": "https://rr1---sn-ug5onfvgaq-aixz.googlevideo.com/videoplayback?expire=1771006925&ei=bRePafGLJ-_lmLAPxNqx8A4&ip=45.194.14.155&id=o-AHIoK8XNiry30mgs_8lsXRtkyB61kXn8yjXj4J_v6B-q&itag=18&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=495&met=1770985325%2C&mh=Gx&mm=31%2C29&mn=sn-ug5onfvgaq-aixz%2Csn-hgn7rnls&ms=au%2Crdu&mv=m&mvi=1&pcm2cms=yes&pl=24&rms=au%2Cau&pcm2=no&initcwndbps=391250&bui=AW-iu_rGfqHKWJI87i5m4HaHPxJ5iZV54_wv07uMmNqz_Wx83g5GDqrOU3GqT_wgdF6Bo9qyFEFdr55g&spc=q5xjPJxuxi8uZ4YApEE2_Icgpv3tYp1Rt2DVwoLbnsrIOLU5o83pv1J-tPyjIGQexBnKSYqa&vprv=1&svpuc=1&mime=video%2Fmp4&ns=7V-vZCA9eDzL3FfgJMDTmwcS&rqh=1&gir=yes&clen=17962329&ratebypass=yes&dur=326.936&lmt=1770908079236827&mt=1770984808&fvip=3&fexp=51552689%2C51565115%2C51565682%2C51580968%2C51772949&c=WEB&sefc=1&txp=5309224&n=te91DF1J_7Mwv6PYC&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cpcm2%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Crqh%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AJEij0EwRQIgTzh_Wd909DvRgjocOY_LPBlJbZXNvgnsgq05B4NPE4MCIQDUtaAHMNdNMUpwwjOG3GIjM0y3pF_U0ywnmlPe5WKO_A%3D%3D&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Crms%2Cinitcwndbps&lsig=APaTxxMwRQIhAIHayewyc2Q1OdGdraB5TreTxE2mQ85D3mSnSQitAVOnAiA_g1J8yAEb9stSXl6odhdEYAiI2ODX-4_071C925hVkg%3D%3D",
+      "mimeType": "video/mp4; codecs=\"avc1.42001E, mp4a.40.2\"",
+      "bitrate": 439606,
+      "width": 640,
+      "height": 360,
+      "lastModified": "1770908079236827",
+      "contentLength": "17962329",
+      "quality": "medium",
+      "fps": 25,
+      "qualityLabel": "360p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 439531,
+      "audioQuality": "AUDIO_QUALITY_LOW",
+      "approxDurationMs": "326936",
+      "audioSampleRate": "44100",
+      "audioChannels": 2,
+      "qualityOrdinal": "QUALITY_ORDINAL_360P"
+    },
+    {
+      "itag": 313,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 18167477,
+      "width": 3840,
+      "height": 2160,
+      "initRange": {
+        "start": "0",
+        "end": "220"
+      },
+      "indexRange": {
+        "start": "221",
+        "end": "1215"
+      },
+      "lastModified": "1770908157971241",
+      "contentLength": "444147297",
+      "quality": "hd2160",
+      "fps": 25,
+      "qualityLabel": "2160p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 10869977,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_2160P"
+    },
+    {
+      "itag": 271,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 6611740,
+      "width": 2560,
+      "height": 1440,
+      "initRange": {
+        "start": "0",
+        "end": "219"
+      },
+      "indexRange": {
+        "start": "220",
+        "end": "1211"
+      },
+      "lastModified": "1770908126441717",
+      "contentLength": "167280131",
+      "quality": "hd1440",
+      "fps": 25,
+      "qualityLabel": "1440p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 4093982,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_1440P"
+    },
+    {
+      "itag": 137,
+      "mimeType": "video/mp4; codecs=\"avc1.640028\"",
+      "bitrate": 3880789,
+      "width": 1920,
+      "height": 1080,
+      "initRange": {
+        "start": "0",
+        "end": "741"
+      },
+      "indexRange": {
+        "start": "742",
+        "end": "1445"
+      },
+      "lastModified": "1770908103074345",
+      "contentLength": "100916965",
+      "quality": "hd1080",
+      "fps": 25,
+      "qualityLabel": "1080p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 2469822,
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_1080P"
+    },
+    {
+      "itag": 248,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 2722466,
+      "width": 1920,
+      "height": 1080,
+      "initRange": {
+        "start": "0",
+        "end": "219"
+      },
+      "indexRange": {
+        "start": "220",
+        "end": "1204"
+      },
+      "lastModified": "1770908116091322",
+      "contentLength": "70257903",
+      "quality": "hd1080",
+      "fps": 25,
+      "qualityLabel": "1080p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 1719478,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_1080P"
+    },
+    {
+      "itag": 136,
+      "mimeType": "video/mp4; codecs=\"avc1.64001f\"",
+      "bitrate": 2188074,
+      "width": 1280,
+      "height": 720,
+      "initRange": {
+        "start": "0",
+        "end": "739"
+      },
+      "indexRange": {
+        "start": "740",
+        "end": "1443"
+      },
+      "lastModified": "1770908097571935",
+      "contentLength": "56365546",
+      "quality": "hd720",
+      "fps": 25,
+      "qualityLabel": "720p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 1379479,
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_720P"
+    },
+    {
+      "itag": 247,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 1629662,
+      "width": 1280,
+      "height": 720,
+      "initRange": {
+        "start": "0",
+        "end": "219"
+      },
+      "indexRange": {
+        "start": "220",
+        "end": "1195"
+      },
+      "lastModified": "1770908103418335",
+      "contentLength": "41816330",
+      "quality": "hd720",
+      "fps": 25,
+      "qualityLabel": "720p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 1023405,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_720P"
+    },
+    {
+      "itag": 135,
+      "mimeType": "video/mp4; codecs=\"avc1.4d401e\"",
+      "bitrate": 1226126,
+      "width": 854,
+      "height": 480,
+      "initRange": {
+        "start": "0",
+        "end": "740"
+      },
+      "indexRange": {
+        "start": "741",
+        "end": "1444"
+      },
+      "lastModified": "1770908098652463",
+      "contentLength": "30170571",
+      "quality": "large",
+      "fps": 25,
+      "qualityLabel": "480p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 738388,
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_480P"
+    },
+    {
+      "itag": 244,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 920379,
+      "width": 854,
+      "height": 480,
+      "initRange": {
+        "start": "0",
+        "end": "219"
+      },
+      "indexRange": {
+        "start": "220",
+        "end": "1176"
+      },
+      "lastModified": "1770908102749358",
+      "contentLength": "22973062",
+      "quality": "large",
+      "fps": 25,
+      "qualityLabel": "480p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 562238,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_480P"
+    },
+    {
+      "itag": 134,
+      "mimeType": "video/mp4; codecs=\"avc1.4d401e\"",
+      "bitrate": 590740,
+      "width": 640,
+      "height": 360,
+      "initRange": {
+        "start": "0",
+        "end": "740"
+      },
+      "indexRange": {
+        "start": "741",
+        "end": "1444"
+      },
+      "lastModified": "1770908096179720",
+      "contentLength": "13948279",
+      "quality": "medium",
+      "fps": 25,
+      "qualityLabel": "360p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 341367,
+      "highReplication": true,
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_360P"
+    },
+    {
+      "itag": 243,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 568469,
+      "width": 640,
+      "height": 360,
+      "initRange": {
+        "start": "0",
+        "end": "219"
+      },
+      "indexRange": {
+        "start": "220",
+        "end": "1163"
+      },
+      "lastModified": "1770908103503605",
+      "contentLength": "14044755",
+      "quality": "medium",
+      "fps": 25,
+      "qualityLabel": "360p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 343728,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_360P"
+    },
+    {
+      "itag": 133,
+      "mimeType": "video/mp4; codecs=\"avc1.4d4015\"",
+      "bitrate": 306263,
+      "width": 426,
+      "height": 240,
+      "initRange": {
+        "start": "0",
+        "end": "739"
+      },
+      "indexRange": {
+        "start": "740",
+        "end": "1443"
+      },
+      "lastModified": "1770908097617923",
+      "contentLength": "7689864",
+      "quality": "small",
+      "fps": 25,
+      "qualityLabel": "240p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 188200,
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_240P"
+    },
+    {
+      "itag": 242,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 319141,
+      "width": 426,
+      "height": 240,
+      "initRange": {
+        "start": "0",
+        "end": "218"
+      },
+      "indexRange": {
+        "start": "219",
+        "end": "1161"
+      },
+      "lastModified": "1770908106763655",
+      "contentLength": "7722888",
+      "quality": "small",
+      "fps": 25,
+      "qualityLabel": "240p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 189008,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_240P"
+    },
+    {
+      "itag": 160,
+      "mimeType": "video/mp4; codecs=\"avc1.4d400c\"",
+      "bitrate": 133103,
+      "width": 256,
+      "height": 144,
+      "initRange": {
+        "start": "0",
+        "end": "738"
+      },
+      "indexRange": {
+        "start": "739",
+        "end": "1442"
+      },
+      "lastModified": "1770908097616924",
+      "contentLength": "3542845",
+      "quality": "tiny",
+      "fps": 25,
+      "qualityLabel": "144p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 86706,
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_144P"
+    },
+    {
+      "itag": 278,
+      "mimeType": "video/webm; codecs=\"vp9\"",
+      "bitrate": 312476,
+      "width": 256,
+      "height": 144,
+      "initRange": {
+        "start": "0",
+        "end": "218"
+      },
+      "indexRange": {
+        "start": "219",
+        "end": "1161"
+      },
+      "lastModified": "1770908103280343",
+      "contentLength": "4757967",
+      "quality": "tiny",
+      "fps": 25,
+      "qualityLabel": "144p",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 116445,
+      "colorInfo": {
+        "primaries": "COLOR_PRIMARIES_BT709",
+        "transferCharacteristics": "COLOR_TRANSFER_CHARACTERISTICS_BT709",
+        "matrixCoefficients": "COLOR_MATRIX_COEFFICIENTS_BT709"
+      },
+      "approxDurationMs": "326880",
+      "qualityOrdinal": "QUALITY_ORDINAL_144P"
+    },
+    {
+      "itag": 140,
+      "mimeType": "audio/mp4; codecs=\"mp4a.40.2\"",
+      "bitrate": 130489,
+      "initRange": {
+        "start": "0",
+        "end": "722"
+      },
+      "indexRange": {
+        "start": "723",
+        "end": "1150"
+      },
+      "lastModified": "1770908074287145",
+      "contentLength": "5292401",
+      "quality": "tiny",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 129503,
+      "highReplication": true,
+      "audioQuality": "AUDIO_QUALITY_MEDIUM",
+      "approxDurationMs": "326936",
+      "audioSampleRate": "44100",
+      "audioChannels": 2,
+      "loudnessDb": -5.8500004,
+      "trackAbsoluteLoudnessLkfs": -19.85,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "mp4a.40.2",
+      "container": "mp4"
+    },
+    {
+      "itag": 140,
+      "mimeType": "audio/mp4; codecs=\"mp4a.40.2\"",
+      "bitrate": 130486,
+      "initRange": {
+        "start": "0",
+        "end": "722"
+      },
+      "indexRange": {
+        "start": "723",
+        "end": "1150"
+      },
+      "lastModified": "1770908074275559",
+      "contentLength": "5292417",
+      "quality": "tiny",
+      "xtags": "CggKA2RyYxIBMQ",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 129503,
+      "highReplication": true,
+      "audioQuality": "AUDIO_QUALITY_MEDIUM",
+      "approxDurationMs": "326936",
+      "audioSampleRate": "44100",
+      "audioChannels": 2,
+      "loudnessDb": -5.5,
+      "isDrc": true,
+      "trackAbsoluteLoudnessLkfs": -19.5,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "mp4a.40.2",
+      "container": "mp4"
+    },
+    {
+      "itag": 249,
+      "mimeType": "audio/webm; codecs=\"opus\"",
+      "bitrate": 56348,
+      "initRange": {
+        "start": "0",
+        "end": "265"
+      },
+      "indexRange": {
+        "start": "266",
+        "end": "823"
+      },
+      "lastModified": "1770908113876306",
+      "contentLength": "2107790",
+      "quality": "tiny",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 51582,
+      "audioQuality": "AUDIO_QUALITY_LOW",
+      "approxDurationMs": "326901",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "loudnessDb": -5.8500004,
+      "trackAbsoluteLoudnessLkfs": -19.85,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "opus",
+      "container": "webm"
+    },
+    {
+      "itag": 249,
+      "mimeType": "audio/webm; codecs=\"opus\"",
+      "bitrate": 56355,
+      "initRange": {
+        "start": "0",
+        "end": "265"
+      },
+      "indexRange": {
+        "start": "266",
+        "end": "823"
+      },
+      "lastModified": "1770908083617581",
+      "contentLength": "2109243",
+      "quality": "tiny",
+      "xtags": "CggKA2RyYxIBMQ",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 51617,
+      "audioQuality": "AUDIO_QUALITY_LOW",
+      "approxDurationMs": "326901",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "loudnessDb": -5.5,
+      "isDrc": true,
+      "trackAbsoluteLoudnessLkfs": -19.5,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "opus",
+      "container": "webm"
+    },
+    {
+      "itag": 250,
+      "mimeType": "audio/webm; codecs=\"opus\"",
+      "bitrate": 77154,
+      "initRange": {
+        "start": "0",
+        "end": "265"
+      },
+      "indexRange": {
+        "start": "266",
+        "end": "823"
+      },
+      "lastModified": "1770908113892182",
+      "contentLength": "2993475",
+      "quality": "tiny",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 73257,
+      "audioQuality": "AUDIO_QUALITY_LOW",
+      "approxDurationMs": "326901",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "loudnessDb": -5.8500004,
+      "trackAbsoluteLoudnessLkfs": -19.85,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "opus",
+      "container": "webm"
+    },
+    {
+      "itag": 250,
+      "mimeType": "audio/webm; codecs=\"opus\"",
+      "bitrate": 77158,
+      "initRange": {
+        "start": "0",
+        "end": "265"
+      },
+      "indexRange": {
+        "start": "266",
+        "end": "823"
+      },
+      "lastModified": "1770908083602960",
+      "contentLength": "2993671",
+      "quality": "tiny",
+      "xtags": "CggKA2RyYxIBMQ",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 73261,
+      "audioQuality": "AUDIO_QUALITY_LOW",
+      "approxDurationMs": "326901",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "loudnessDb": -5.5,
+      "isDrc": true,
+      "trackAbsoluteLoudnessLkfs": -19.5,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "opus",
+      "container": "webm"
+    },
+    {
+      "itag": 251,
+      "mimeType": "audio/webm; codecs=\"opus\"",
+      "bitrate": 148489,
+      "initRange": {
+        "start": "0",
+        "end": "265"
+      },
+      "indexRange": {
+        "start": "266",
+        "end": "823"
+      },
+      "lastModified": "1770908113870958",
+      "contentLength": "5712982",
+      "quality": "tiny",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 139809,
+      "audioQuality": "AUDIO_QUALITY_MEDIUM",
+      "approxDurationMs": "326901",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "loudnessDb": -5.8500004,
+      "trackAbsoluteLoudnessLkfs": -19.85,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "opus",
+      "container": "webm"
+    },
+    {
+      "itag": 251,
+      "mimeType": "audio/webm; codecs=\"opus\"",
+      "bitrate": 148490,
+      "initRange": {
+        "start": "0",
+        "end": "265"
+      },
+      "indexRange": {
+        "start": "266",
+        "end": "823"
+      },
+      "lastModified": "1770908083594538",
+      "contentLength": "5713118",
+      "quality": "tiny",
+      "xtags": "CggKA2RyYxIBMQ",
+      "projectionType": "RECTANGULAR",
+      "averageBitrate": 139812,
+      "audioQuality": "AUDIO_QUALITY_MEDIUM",
+      "approxDurationMs": "326901",
+      "audioSampleRate": "48000",
+      "audioChannels": 2,
+      "loudnessDb": -5.5,
+      "isDrc": true,
+      "trackAbsoluteLoudnessLkfs": -19.5,
+      "qualityOrdinal": "QUALITY_ORDINAL_UNKNOWN",
+      "codec": "opus",
+      "container": "webm"
+    }
+  ],
+  "video_details": {
+    "id": "ZVzzVmPuWqs",
+    "url": "https://www.youtube.com/watch?v=ZVzzVmPuWqs",
+    "title": "Do This Everyday and Your Testosterone will SKYROCKET",
+    "description": "1️⃣ Apply for 1:1 Online Coaching Here: 👉 https://tinyurl.com/BillyHughesCoaching\n\n2️⃣ FREE 8 Day Course to Smarter Gains 👉 https://tinyurl.com/8DaysToSmarterGains\n\n3️⃣ Follow me on Instagram 👉   / billyhughesgym  \n\nHelping ambitious guys achieve top 1% physiques, without living like a bodybuilder  ✅ \nWithout hours in the gym  ❌ Without unrealistic routine and diets  ❌ \n\nOn this channel, we talk about:\nPhysique development\nHow to progress in the gym\nTraining Programmes\nDiet Protocols\nNutrition\nBuild Structure & Routine\nBodybuilding\nSupplement Tips\nMorning Routines\nProductivity\n& more...",
+    "durationInSec": 327,
+    "durationRaw": "05:27",
+    "uploadedAt": "2026-02-04T07:36:06-08:00",
+    "thumbnail": {
+      "url": "https://i.ytimg.com/vi_webp/ZVzzVmPuWqs/maxresdefault.webp",
+      "width": 1920,
+      "height": 1080
+    },
+    "channel": {
+      "name": "Billy Hughes",
+      "verified": false,
+      "artist": false,
+      "id": "UCIQHWV1xjRNoFKhIBaIL54w",
+      "url": "https://www.youtube.com/channel/UCIQHWV1xjRNoFKhIBaIL54w",
+      "icons": [
+        {
+          "url": "https://yt3.ggpht.com/-mlh9vGP08Bvn3R_7QF0gDthLhJzzO7DtYxHEqImTSfP1uxupqRYeBZuH6V-APA3sUu42q-g=s48-c-k-c0x00ffffff-no-rj",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "url": "https://yt3.ggpht.com/-mlh9vGP08Bvn3R_7QF0gDthLhJzzO7DtYxHEqImTSfP1uxupqRYeBZuH6V-APA3sUu42q-g=s88-c-k-c0x00ffffff-no-rj",
+          "width": 88,
+          "height": 88
+        },
+        {
+          "url": "https://yt3.ggpht.com/-mlh9vGP08Bvn3R_7QF0gDthLhJzzO7DtYxHEqImTSfP1uxupqRYeBZuH6V-APA3sUu42q-g=s176-c-k-c0x00ffffff-no-rj",
+          "width": 176,
+          "height": 176
+        }
+      ],
+      "type": "channel",
+      "subscribers": null
+    },
+    "views": 13334,
+    "tags": [],
+    "likes": 0,
+    "live": false,
+    "private": false,
+    "discretionAdvised": false,
+    "music": [],
+    "chapters": []
+  },
+  "related_videos": []
+}
+2026-02-13 17:22:05 [INFO] Successfully fetched metadata for youtube: undefined
+2026-02-13 17:23:32 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:23:32 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:23:32 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:23:32 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:23:39 [INFO] POST /api/v1/analyze
+2026-02-13 17:23:39 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:23:39 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:23:39 [INFO] Extracted video ID: ZVzzVmPuWqs
+2026-02-13 17:23:40 [WARN] Primary API failed: getaddrinfo ENOTFOUND www.napi.js.cn
+2026-02-13 17:23:41 [ERROR] Failed to fetch info for https://www.youtube.com/watch?v=ZVzzVmPuWqs:
+2026-02-13 17:23:41 [ERROR] Analyze error: Could not fetch video information from any API
+2026-02-13 17:24:37 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:24:37 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:24:37 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:24:37 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:24:50 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:24:50 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:24:50 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:24:50 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:24:56 [INFO] POST /api/v1/analyze
+2026-02-13 17:24:56 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:24:56 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:24:56 [INFO] Extracted video ID: ZVzzVmPuWqs
+2026-02-13 17:24:57 [INFO] Successfully fetched metadata for youtube: Do This Everyday and Your Testosterone will SKYROCKET
+2026-02-13 17:27:04 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:27:04 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:27:04 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:27:04 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:27:07 [INFO] POST /api/v1/download
+2026-02-13 17:27:07 [INFO] Download request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:27:07 [INFO] Processing download for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:27:07 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:27:07 [INFO] Extracted video ID: ZVzzVmPuWqs
+2026-02-13 17:27:07 [INFO] Successfully fetched metadata for youtube: Do This Everyday and Your Testosterone will SKYROCKET
+2026-02-13 17:27:07 [INFO] Preparing download to: E:\Social-downloader\social-downloader-api\downloads\Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4
+2026-02-13 17:27:07 [INFO] Download prepared: Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4 (253 bytes)
+2026-02-13 17:28:32 [INFO] GET /downloads/Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4
+2026-02-13 17:28:55 [INFO] POST /downloads/Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4
+2026-02-13 17:28:55 [WARN] 404 - Route not found: POST /downloads/Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4
+2026-02-13 17:29:01 [INFO] GET /downloads/Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4
+2026-02-13 17:30:04 [INFO] GET /downloads/Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4
+2026-02-13 17:34:57 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:34:57 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:34:57 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:34:57 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:35:14 [INFO] GET /downloads/Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770985627971.mp4
+2026-02-13 17:35:21 [INFO] POST /api/v1/download
+2026-02-13 17:35:21 [INFO] Download request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:35:21 [INFO] Starting download for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:35:21 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:35:21 [INFO] Extracted video ID: ZVzzVmPuWqs
+2026-02-13 17:35:22 [INFO] Successfully fetched metadata for youtube: Do This Everyday and Your Testosterone will SKYROCKET
+2026-02-13 17:35:22 [INFO] Downloading to: E:\Social-downloader\social-downloader-api\downloads\Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770986122046.mp4
+2026-02-13 17:35:28 [ERROR] Failed to get video info: aborted
+2026-02-13 17:35:28 [ERROR] Download error: Failed to get video info: aborted
+2026-02-13 17:36:56 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:36:56 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:36:56 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:36:56 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:37:05 [INFO] POST /api/v1/download
+2026-02-13 17:37:05 [INFO] Download request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:05 [INFO] Starting download for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:05 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:05 [INFO] Extracted video ID: ZVzzVmPuWqs
+2026-02-13 17:37:06 [INFO] Successfully fetched metadata for youtube: Do This Everyday and Your Testosterone will SKYROCKET
+2026-02-13 17:37:06 [INFO] Downloading to: E:\Social-downloader\social-downloader-api\downloads\Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770986226620.mp4
+2026-02-13 17:37:17 [INFO] Video info retrieved successfully
+2026-02-13 17:37:17 [INFO] Chose format: 360p
+2026-02-13 17:37:19 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:37:19 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:37:19 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:37:19 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:37:24 [INFO] POST /api/v1/analyze
+2026-02-13 17:37:24 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:24 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:24 [INFO] Extracted video ID: ZVzzVmPuWqs
+2026-02-13 17:37:25 [INFO] Successfully fetched metadata for youtube: Do This Everyday and Your Testosterone will SKYROCKET
+2026-02-13 17:37:35 [INFO] POST /api/v1/download
+2026-02-13 17:37:35 [INFO] Download request for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:35 [INFO] Starting download for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:35 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=ZVzzVmPuWqs
+2026-02-13 17:37:35 [INFO] Extracted video ID: ZVzzVmPuWqs
+2026-02-13 17:37:35 [INFO] Successfully fetched metadata for youtube: Do This Everyday and Your Testosterone will SKYROCKET
+2026-02-13 17:37:35 [INFO] Downloading to: E:\Social-downloader\social-downloader-api\downloads\Do_This_Everyday_and_Your_Testosterone_will_SKYROCKET_1770986255981.mp4
+2026-02-13 17:37:45 [INFO] Video info retrieved successfully
+2026-02-13 17:37:45 [INFO] Chose format: 360p
+2026-02-13 17:37:48 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:37:48 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:37:48 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:37:48 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:38:19 [INFO] POST /api/v1/download
+2026-02-13 17:38:19 [INFO] Download request for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:38:19 [INFO] Starting download for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:38:19 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:38:19 [INFO] Extracted video ID: S-XxKVxZ2fU
+2026-02-13 17:38:19 [INFO] Successfully fetched metadata for youtube: ONE PIECE: Season 2 | Official Trailer | Netflix
+2026-02-13 17:38:19 [INFO] Downloading to: E:\Social-downloader\social-downloader-api\downloads\ONE_PIECE_Season_2_Official_Trailer_Netflix_1770986299746.mp4
+2026-02-13 17:38:36 [INFO] Video info retrieved successfully
+2026-02-13 17:38:36 [INFO] Chose format: 360p
+2026-02-13 17:38:38 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:38:38 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:38:38 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:38:38 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:39:49 [INFO] GET /
+2026-02-13 17:40:45 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:40:45 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:40:45 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:40:45 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:41:50 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:41:50 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:41:50 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:41:50 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:41:53 [INFO] GET /
+2026-02-13 17:43:20 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:43:20 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:43:20 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:43:20 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:43:24 [INFO] GET /
+2026-02-13 17:43:34 [INFO] POST /api/v1/download
+2026-02-13 17:43:34 [INFO] Download request for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:43:34 [INFO] Starting download for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:43:34 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:43:34 [INFO] Extracted video ID: S-XxKVxZ2fU
+2026-02-13 17:43:34 [INFO] Successfully fetched metadata for youtube: ONE PIECE: Season 2 | Official Trailer | Netflix
+2026-02-13 17:43:34 [INFO] Download prepared: ONE_PIECE_Season_2_Official_Trailer_Netflix_1770986614912.mp4
+2026-02-13 17:43:34 [INFO] Download file created: ONE_PIECE_Season_2_Official_Trailer_Netflix_1770986614912.mp4 (361 bytes)
+2026-02-13 17:43:52 [INFO] POST /api/v1/analyze
+2026-02-13 17:43:52 [INFO] Analyze request for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:43:52 [INFO] Fetching metadata for URL: https://www.youtube.com/watch?v=S-XxKVxZ2fU
+2026-02-13 17:43:52 [INFO] Extracted video ID: S-XxKVxZ2fU
+2026-02-13 17:43:52 [INFO] Successfully fetched metadata for youtube: ONE PIECE: Season 2 | Official Trailer | Netflix
+2026-02-13 17:44:04 [INFO] GET /downloads/ONE_PIECE_Season_2_Official_Trailer_Netflix_1770986614912.mp4
+2026-02-13 17:45:01 [INFO] GET /
+2026-02-13 17:45:16 [INFO] GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-13 17:45:16 [WARN] 404 - Route not found: GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-13 17:47:26 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:47:26 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:47:26 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:47:26 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:47:28 [INFO] GET /
+2026-02-13 17:47:29 [INFO] GET /app.js
+2026-02-13 17:47:29 [WARN] 404 - Route not found: GET /app.js
+2026-02-13 17:47:39 [INFO] GET /.well-known/appspecific/com.chrome.devtools.json
+2026-02-13 17:47:39 [WARN] 404 - Route not found: GET /.well-known/appspecific/com.chrome.devtools.json
