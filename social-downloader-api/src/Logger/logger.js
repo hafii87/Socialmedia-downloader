@@ -43,3 +43,6 @@ const logger = winston.createLogger({
 });
 
 module.exports = logger;
+
+// Install global build tools
+// npm install --global --production windows-build-tools

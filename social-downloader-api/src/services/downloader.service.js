@@ -1,5 +1,12 @@
 const axios = require('axios');
 const ytdl = require('@distube/ytdl-core');
+let igdl, TikTokScraper;
+try {
+  igdl = require('instagram-url-direct');
+} catch (e) { igdl = null; }
+try {
+  TikTokScraper = require('tiktok-scraper');
+} catch (e) { TikTokScraper = null; }
 const path = require('path');
 const fs = require('fs');
 const { Readable } = require('stream');
@@ -45,54 +52,89 @@ const extractVideoId = (url) => {
 const getInfo = async (url) => {
   try {
     logger.info(`Fetching metadata for URL: ${url}`);
-    
     const platform = detectPlatform(url);
-    
-    if (platform !== 'youtube') {
-      throw new Error(`Platform '${platform}' is not yet fully supported. Currently only YouTube is supported.`);
+
+    if (platform === 'youtube') {
+      const videoId = extractVideoId(url);
+      if (!videoId) {
+        throw new Error('Invalid YouTube URL - could not extract video ID');
+      }
+      logger.info(`Extracted video ID: ${videoId}`);
+      // Use YouTube oEmbed API
+      const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+      let oembedData;
+      try {
+        const oembedResponse = await axios.get(oEmbedUrl, { 
+          timeout: 10000,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+          }
+        });
+        oembedData = oembedResponse.data;
+      } catch (oembedError) {
+        logger.warn(`oEmbed API failed: ${oembedError.message}`);
+        throw new Error('Could not fetch video metadata');
+      }
+      logger.info(`Successfully fetched metadata for ${platform}: ${oembedData.title}`);
+      return {
+        success: true,
+        platform,
+        title: oembedData.title || 'Untitled',
+        duration: null,
+        durationFormatted: null,
+        thumbnail: oembedData.thumbnail_url || null,
+        uploader: oembedData.author_name || 'Unknown',
+        uploadDate: null,
+        description: null,
+        webpage_url: url,
+        formats: [],
+        isPlayable: true,
+        videoId: videoId
+      };
     }
 
-    const videoId = extractVideoId(url);
-    if (!videoId) {
-      throw new Error('Invalid YouTube URL - could not extract video ID');
+    if (platform === 'instagram') {
+      if (!igdl) throw new Error('Instagram support not installed');
+      const results = await igdl.getInfo(url);
+      if (!results || !results.url_list || !results.url_list.length) throw new Error('No downloadable video found');
+      return {
+        success: true,
+        platform,
+        title: results.title || 'Instagram Video',
+        duration: null,
+        durationFormatted: null,
+        thumbnail: results.thumbnail || null,
+        uploader: results.author || 'Unknown',
+        uploadDate: null,
+        description: results.caption || null,
+        webpage_url: url,
+        formats: results.url_list,
+        isPlayable: true
+      };
     }
 
-    logger.info(`Extracted video ID: ${videoId}`);
-
-    // Use YouTube oEmbed API
-    const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
-    
-    let oembedData;
-    try {
-      const oembedResponse = await axios.get(oEmbedUrl, { 
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-      });
-      oembedData = oembedResponse.data;
-    } catch (oembedError) {
-      logger.warn(`oEmbed API failed: ${oembedError.message}`);
-      throw new Error('Could not fetch video metadata');
+    if (platform === 'tiktok') {
+      if (!TikTokScraper) throw new Error('TikTok support not installed');
+      const videoMeta = await TikTokScraper.getVideoMeta(url);
+      if (!videoMeta || !videoMeta.collector || !videoMeta.collector.length) throw new Error('No downloadable video found');
+      const info = videoMeta.collector[0];
+      return {
+        success: true,
+        platform,
+        title: info.text || 'TikTok Video',
+        duration: null,
+        durationFormatted: null,
+        thumbnail: info.videoUrl || null,
+        uploader: info.authorMeta.name || 'Unknown',
+        uploadDate: info.createTime || null,
+        description: info.text || null,
+        webpage_url: url,
+        formats: [info.videoUrl],
+        isPlayable: true
+      };
     }
 
-    logger.info(`Successfully fetched metadata for ${platform}: ${oembedData.title}`);
-
-    return {
-      success: true,
-      platform,
-      title: oembedData.title || 'Untitled',
-      duration: null,
-      durationFormatted: null,
-      thumbnail: oembedData.thumbnail_url || null,
-      uploader: oembedData.author_name || 'Unknown',
-      uploadDate: null,
-      description: null,
-      webpage_url: url,
-      formats: [],
-      isPlayable: true,
-      videoId: videoId
-    };
+    throw new Error(`Platform '${platform}' is not supported.`);
   } catch (error) {
     logger.error(`Failed to fetch info for ${url}:`, error.message);
     throw new Error(error.message || 'Failed to fetch video information');
@@ -107,39 +149,67 @@ const downloadMedia = async (url) => {
   try {
     logger.info(`Starting download for URL: ${url}`);
     const platform = detectPlatform(url);
-    if (platform !== 'youtube') {
-      throw new Error(`Platform '${platform}' is not yet fully supported. Currently only YouTube is supported.`);
+    if (platform === 'youtube') {
+      // Get metadata
+      const metadata = await getInfo(url);
+      const title = metadata.title || 'video';
+      // Sanitize filename
+      const safeTitle = (title || 'video')
+        .replace(/[^a-zA-Z0-9_\-]/g, '_')
+        .replace(/_+/g, '_')
+        .slice(0, 80);
+      const filename = `${safeTitle}_${Date.now()}.mp4`;
+      const filePath = path.join(DOWNLOAD_DIR, filename);
+      logger.info(`Downloading video to: ${filePath}`);
+      // Download video using ytdl-core
+      const videoStream = ytdl(url, { quality: 'highest', filter: 'audioandvideo' });
+      await new Promise((resolve, reject) => {
+        const writeStream = fs.createWriteStream(filePath);
+        videoStream.pipe(writeStream);
+        videoStream.on('error', (err) => {
+          logger.error(`ytdl stream error: ${err.message}`);
+          fs.unlink(filePath, () => {});
+          reject(new Error('Failed to download video stream'));
+        });
+        writeStream.on('finish', resolve);
+        writeStream.on('error', (err) => {
+          logger.error(`File write error: ${err.message}`);
+          fs.unlink(filePath, () => {});
+          reject(new Error('Failed to write video file'));
+        });
+      });
+      const fileSize = fs.statSync(filePath).size;
+      logger.info(`Download complete: ${filename} (${fileSize} bytes)`);
+      return {
+        success: true,
+        filename,
+        filepath: filePath,
+        downloadUrl: `/downloads/${filename}`,
+        filesize: fileSize,
+        platform,
+        title,
+        videoId: metadata.videoId,
+        thumbnail: metadata.thumbnail,
+        uploader: metadata.uploader
+      };
     }
-    // Get metadata
-    const metadata = await getInfo(url);
-    const title = metadata.title || 'video';
-    // Sanitize filename
-    const safeTitle = (title || 'video')
-      .replace(/[^a-zA-Z0-9_\-]/g, '_')
-      .replace(/_+/g, '_')
-      .slice(0, 80);
+
+    // For Instagram and TikTok
+    const info = await getInfo(url);
+    const videoUrl = info.formats[0];
+    const title = info.title || 'video';
+    const safeTitle = title.replace(/[^a-zA-Z0-9_\-]/g, '_').replace(/_+/g, '_').slice(0, 80);
     const filename = `${safeTitle}_${Date.now()}.mp4`;
     const filePath = path.join(DOWNLOAD_DIR, filename);
-    logger.info(`Downloading video to: ${filePath}`);
-    // Download video using ytdl-core
-    const videoStream = ytdl(url, { quality: 'highest', filter: 'audioandvideo' });
+    // Download the video file
+    const response = await axios.get(videoUrl, { responseType: 'stream' });
     await new Promise((resolve, reject) => {
       const writeStream = fs.createWriteStream(filePath);
-      videoStream.pipe(writeStream);
-      videoStream.on('error', (err) => {
-        logger.error(`ytdl stream error: ${err.message}`);
-        fs.unlink(filePath, () => {});
-        reject(new Error('Failed to download video stream'));
-      });
+      response.data.pipe(writeStream);
       writeStream.on('finish', resolve);
-      writeStream.on('error', (err) => {
-        logger.error(`File write error: ${err.message}`);
-        fs.unlink(filePath, () => {});
-        reject(new Error('Failed to write video file'));
-      });
+      writeStream.on('error', reject);
     });
     const fileSize = fs.statSync(filePath).size;
-    logger.info(`Download complete: ${filename} (${fileSize} bytes)`);
     return {
       success: true,
       filename,
@@ -147,10 +217,7 @@ const downloadMedia = async (url) => {
       downloadUrl: `/downloads/${filename}`,
       filesize: fileSize,
       platform,
-      title,
-      videoId: metadata.videoId,
-      thumbnail: metadata.thumbnail,
-      uploader: metadata.uploader
+      title
     };
   } catch (error) {
     logger.error(`Download failed for ${url}:`, error.message);

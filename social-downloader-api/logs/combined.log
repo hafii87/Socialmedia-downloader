@@ -1001,3 +1001,12 @@
 2026-02-13 18:44:34 [INFO] 📝 Logs stored in ./logs directory
 2026-02-13 18:44:34 [INFO] ⬇️  Downloads stored in ./downloads directory
 2026-02-13 18:44:34 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 18:58:05 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 18:58:05 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 18:58:05 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 18:58:05 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 18:58:12 [INFO] POST /api/v1/analyze
+2026-02-13 18:58:12 [INFO] Analyze request for URL: https://www.instagram.com/reels/DUbE_v2EiFA/
+2026-02-13 18:58:12 [INFO] Fetching metadata for URL: https://www.instagram.com/reels/DUbE_v2EiFA/
+2026-02-13 18:58:12 [ERROR] Failed to fetch info for https://www.instagram.com/reels/DUbE_v2EiFA/:
+2026-02-13 18:58:12 [ERROR] Analyze error: Instagram support not installed

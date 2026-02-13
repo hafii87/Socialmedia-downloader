@@ -12,3 +12,5 @@
 2026-02-13 17:23:41 [ERROR] Analyze error: Could not fetch video information from any API
 2026-02-13 17:35:28 [ERROR] Failed to get video info: aborted
 2026-02-13 17:35:28 [ERROR] Download error: Failed to get video info: aborted
+2026-02-13 18:58:12 [ERROR] Failed to fetch info for https://www.instagram.com/reels/DUbE_v2EiFA/:
+2026-02-13 18:58:12 [ERROR] Analyze error: Instagram support not installed
