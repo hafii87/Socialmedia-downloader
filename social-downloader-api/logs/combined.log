@@ -931,3 +931,8 @@
 2026-02-13 17:49:50 [INFO] GET /
 2026-02-13 17:49:51 [INFO] GET /favicon.ico
 2026-02-13 17:49:51 [WARN] 404 - Route not found: GET /favicon.ico
+2026-02-13 17:54:28 [INFO] 🚀 Server running on http://localhost:3000
+2026-02-13 17:54:28 [INFO] 📝 Logs stored in ./logs directory
+2026-02-13 17:54:28 [INFO] ⬇️  Downloads stored in ./downloads directory
+2026-02-13 17:54:28 [INFO] 🌐 Open http://localhost:3000 in your browser
+2026-02-13 17:54:30 [INFO] GET /api/v1/status
