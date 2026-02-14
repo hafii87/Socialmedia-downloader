@@ -1,39 +1,46 @@
 {
-  "name": "social-downloader",
-  "version": "1.0.0",
-  "description": "Social media downloader backend API",
-  "main": "social-downloader-api/app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd social-downloader-api && nodemon app.js",
-    "start": "cd social-downloader-api && node app.js"
-  },
+  "name": "social-downloader-api",
+  "version": "2.0.0",
+  "description": "Multi-platform social media downloader API supporting YouTube, Instagram, TikTok, and Snapchat",
+  "main": "app.js",
   "keywords": [
-    "downloader",
-    "social-media",
     "youtube",
     "instagram",
-    "tiktok"
+    "tiktok",
+    "snapchat",
+    "downloader",
+    "api",
+    "social-media"
   ],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "engines": {
-    "node": ">=18.0.0"
+  "license": "MIT",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.12",
-    "axios": "^1.13.5",
+    "@distube/ytdl-core": "^4.12.2",
+    "axios": "^1.6.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^5.2.1",
+    "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
-    "play-dl": "^1.9.7",
+    "instatouch": "^2.2.36",
+    "tiktok-downloader": "^4.0.18",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
+  "optionalDependencies": {
+    "playwright": "^1.40.0",
+    "puppeteer": "^21.4.0"
+  },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }
