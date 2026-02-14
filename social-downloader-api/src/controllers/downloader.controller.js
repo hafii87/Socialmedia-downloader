@@ -10,13 +10,13 @@ const analyzeUrl = async (req, res, next) => {
   try {
     const { url } = req.body;
 
-    logger.info(`📊 Analyze request received for: ${url}`);
+    logger.info(` Analyze request received for: ${url}`);
 
     // Call the service layer
     const info = await getInfo(url);
 
     // Log successful analysis
-    logger.info(`✅ Successfully analyzed ${info.platform}: ${info.title}`);
+    logger.info(` Successfully analyzed ${info.platform}: ${info.title}`);
 
     // Return metadata
     return res.status(200).json({
@@ -41,7 +41,7 @@ const analyzeUrl = async (req, res, next) => {
       }
     });
   } catch (error) {
-    logger.error(`❌ Analyze error: ${error.message}`);
+    logger.error(` Analyze error: ${error.message}`);
     
     // Return proper error response
     return res.status(400).json({
@@ -68,7 +68,7 @@ const downloadUrl = async (req, res, next) => {
     const downloadInfo = await downloadMedia(url, quality);
 
     // Log successful download
-    logger.info(`✅ Download prepared: ${downloadInfo.filename} (${downloadInfo.filesize} bytes)`);
+    logger.info(`Download prepared: ${downloadInfo.filename} (${downloadInfo.filesize} bytes)`);
 
     // Return download link
     return res.status(200).json({
@@ -86,7 +86,7 @@ const downloadUrl = async (req, res, next) => {
       }
     });
   } catch (error) {
-    logger.error(`❌ Download error: ${error.message}`);
+    logger.error(` Download error: ${error.message}`);
     
     // Return proper error response
     return res.status(400).json({

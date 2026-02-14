@@ -1,47 +1,34 @@
 const axios = require('axios');
-const ytdl = require('@distube/ytdl-core');
-const path = require('path');
+const { exec } = require('child_process');
+const { promisify } = require('util');
 const fs = require('fs');
+const path = require('path');
 const logger = require('../Logger/logger');
+const play = require('play-dl');
 
-// Optional platform-specific packages
-let instatouch, TikTokScraper, Playwright;
-
-// Lazy load optional dependencies
-try {
-  instatouch = require('instatouch');
-  logger.info('✅ instatouch loaded for Instagram support');
-} catch (e) {
-  logger.warn('⚠️  instatouch not installed - Instagram support limited');
-  instatouch = null;
-}
-
-try {
-  TikTokScraper = require('tiktok-downloader');
-  logger.info('✅ tiktok-downloader loaded for TikTok support');
-} catch (e) {
-  logger.warn('⚠️  tiktok-downloader not installed - TikTok support limited');
-  TikTokScraper = null;
-}
-
-try {
-  Playwright = require('playwright');
-  logger.info('✅ Playwright loaded for advanced scraping');
-} catch (e) {
-  logger.warn('⚠️  Playwright not installed - Advanced scraping unavailable');
-  Playwright = null;
-}
-
+const execAsync = promisify(exec);
 const DOWNLOAD_DIR = path.join(__dirname, '../../downloads');
 
-// Create downloads directory
+// Create downloads directory if it doesn't exist
 if (!fs.existsSync(DOWNLOAD_DIR)) {
   fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
-  logger.info(`Created downloads directory at ${DOWNLOAD_DIR}`);
+  logger.info(` Created downloads directory at ${DOWNLOAD_DIR}`);
 }
 
+// Check if yt-dlp is installed
+let ytDlpAvailable = false;
+(async () => {
+  try {
+    await execAsync('yt-dlp --version');
+    ytDlpAvailable = true;
+    logger.info(' yt-dlp is available');
+  } catch (e) {
+    logger.warn('⚠️  yt-dlp not found. Install with: pip install yt-dlp');
+  }
+})();
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PLATFORM DETECTION & VALIDATION
+// PLATFORM DETECTION
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const detectPlatform = (url) => {
@@ -51,10 +38,6 @@ const detectPlatform = (url) => {
   if (urlLower.includes('instagram.com')) return 'instagram';
   if (urlLower.includes('tiktok.com') || urlLower.includes('vm.tiktok.com')) return 'tiktok';
   if (urlLower.includes('snapchat.com')) return 'snapchat';
-  if (urlLower.includes('facebook.com') || urlLower.includes('fb.watch')) return 'facebook';
-  if (urlLower.includes('x.com') || urlLower.includes('twitter.com')) return 'twitter';
-  if (urlLower.includes('reddit.com')) return 'reddit';
-  if (urlLower.includes('twitch.tv')) return 'twitch';
   
   return 'unknown';
 };
@@ -69,431 +52,16 @@ const isValidUrl = (url) => {
 };
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// YOUTUBE HANDLER
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const extractYoutubeVideoId = (url) => {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
-  return match && match[2].length === 11 ? match[2] : null;
-};
-
-const getYoutubeInfo = async (url) => {
-  try {
-    const videoId = extractYoutubeVideoId(url);
-    if (!videoId) throw new Error('Invalid YouTube URL - could not extract video ID');
-    
-    logger.info(`[YOUTUBE] Extracted video ID: ${videoId}`);
-    
-    // Try @distube/ytdl-core first
-    try {
-      const info = await ytdl.getInfo(url);
-      const formats = info.formats
-        .filter(f => f.hasVideo && f.hasAudio && f.mimeType)
-        .sort((a, b) => (b.height || 0) - (a.height || 0))
-        .slice(0, 10);
-
-      logger.info(`[YOUTUBE] Successfully fetched info: ${info.videoDetails.title}`);
-
-      return {
-        success: true,
-        platform: 'youtube',
-        title: info.videoDetails.title,
-        duration: parseInt(info.videoDetails.lengthSeconds),
-        durationFormatted: formatDuration(parseInt(info.videoDetails.lengthSeconds)),
-        thumbnail: info.videoDetails.thumbnail.thumbnails.pop().url,
-        uploader: info.videoDetails.author.name,
-        uploadDate: info.videoDetails.uploadDate,
-        description: info.videoDetails.description,
-        views: info.videoDetails.viewCount,
-        isPlayable: !info.videoDetails.isPrivate && !info.videoDetails.isUnlisted,
-        videoId: videoId,
-        webpage_url: url,
-        formats: formats.map(f => ({
-          itag: f.itag,
-          quality: f.qualityLabel || 'unknown',
-          codec: f.mimeType,
-          height: f.height,
-          width: f.width,
-          fps: f.fps
-        }))
-      };
-    } catch (ytdlError) {
-      logger.warn(`[YOUTUBE] @distube/ytdl-core failed: ${ytdlError.message}`);
-      
-      // Fallback to oEmbed API (metadata only)
-      const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
-      const response = await axios.get(oEmbedUrl, { timeout: 10000 });
-      const data = response.data;
-
-      return {
-        success: true,
-        platform: 'youtube',
-        title: data.title,
-        duration: null,
-        durationFormatted: null,
-        thumbnail: data.thumbnail_url,
-        uploader: data.author_name,
-        uploadDate: null,
-        description: null,
-        views: null,
-        isPlayable: true,
-        videoId: videoId,
-        webpage_url: url,
-        formats: []
-      };
-    }
-  } catch (error) {
-    logger.error(`[YOUTUBE] Failed to fetch info: ${error.message}`);
-    throw new Error(`YouTube: ${error.message}`);
-  }
-};
-
-const downloadYoutube = async (url, quality = '360p') => {
-  try {
-    const metadata = await getYoutubeInfo(url);
-    const title = metadata.title || 'video';
-    const safeTitle = sanitizeFilename(title).slice(0, 80);
-    const filename = `${safeTitle}_${Date.now()}.mp4`;
-    const filePath = path.join(DOWNLOAD_DIR, filename);
-
-    logger.info(`[YOUTUBE] Downloading to: ${filePath}`);
-
-    const videoStream = ytdl(url, {
-      quality: 'highest',
-      filter: 'audioandvideo'
-    });
-
-    return new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(filePath);
-      
-      videoStream.pipe(writeStream);
-
-      videoStream.on('error', (err) => {
-        logger.error(`[YOUTUBE] Stream error: ${err.message}`);
-        fs.unlink(filePath, () => {});
-        reject(new Error('Failed to download video stream'));
-      });
-
-      writeStream.on('finish', () => {
-        const fileSize = fs.statSync(filePath).size;
-        logger.info(`[YOUTUBE] Download complete: ${filename} (${fileSize} bytes)`);
-        resolve({
-          success: true,
-          filename,
-          downloadUrl: `/downloads/${filename}`,
-          filesize: fileSize,
-          platform: 'youtube',
-          title: metadata.title,
-          uploader: metadata.uploader,
-          thumbnail: metadata.thumbnail
-        });
-      });
-
-      writeStream.on('error', (err) => {
-        logger.error(`[YOUTUBE] Write error: ${err.message}`);
-        fs.unlink(filePath, () => {});
-        reject(new Error('Failed to write video file'));
-      });
-    });
-  } catch (error) {
-    logger.error(`[YOUTUBE] Download failed: ${error.message}`);
-    throw error;
-  }
-};
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// INSTAGRAM HANDLER
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const getInstagramInfo = async (url) => {
-  try {
-    logger.info(`[INSTAGRAM] Fetching info for: ${url}`);
-
-    // Method 1: Using instatouch if available
-    if (instatouch) {
-      try {
-        const scraper = new instatouch.Instatouch();
-        const reelId = url.match(/\/reel\/([^/?]+)/)?.[1] || 
-                       url.match(/\/p\/([^/?]+)/)?.[1];
-        
-        if (!reelId) throw new Error('Could not extract Instagram post ID');
-
-        const post = await scraper.getPostInfo({ id: reelId });
-        
-        return {
-          success: true,
-          platform: 'instagram',
-          title: post.caption?.substring(0, 100) || 'Instagram Video',
-          description: post.caption || null,
-          thumbnail: post.thumbnail || null,
-          uploader: post.author?.username || 'Unknown',
-          uploadDate: post.timestamp || null,
-          duration: post.duration || null,
-          views: post.statistics?.plays || null,
-          likes: post.statistics?.diggCount || null,
-          downloadUrl: post.video || post.image,
-          webpage_url: url,
-          type: url.includes('/reel/') ? 'reel' : 'post'
-        };
-      } catch (instatouchError) {
-        logger.warn(`[INSTAGRAM] instatouch failed: ${instatouchError.message}`);
-      }
-    }
-
-    // Method 2: Custom API endpoint (Instagram doesn't provide official API for downloads)
-    // This uses an alternative service
-    const instagramApiUrl = `https://api.instazoo.com/api/v1/post?url=${encodeURIComponent(url)}`;
-    const response = await axios.get(instagramApiUrl, { 
-      timeout: 10000,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
-    });
-
-    if (response.data.success) {
-      const data = response.data.data;
-      return {
-        success: true,
-        platform: 'instagram',
-        title: data.caption?.substring(0, 100) || 'Instagram Video',
-        description: data.caption || null,
-        thumbnail: data.thumbnail_url || null,
-        uploader: data.author || 'Unknown',
-        uploadDate: data.timestamp || null,
-        duration: data.duration || null,
-        views: data.views || null,
-        downloadUrl: data.video_url || data.image_url,
-        webpage_url: url
-      };
-    }
-
-    throw new Error('Unable to fetch Instagram data');
-  } catch (error) {
-    logger.error(`[INSTAGRAM] Failed to fetch info: ${error.message}`);
-    throw new Error(`Instagram: ${error.message}`);
-  }
-};
-
-const downloadInstagram = async (url) => {
-  try {
-    const metadata = await getInstagramInfo(url);
-    const title = metadata.title || 'instagram_video';
-    const safeTitle = sanitizeFilename(title).slice(0, 80);
-    const filename = `${safeTitle}_${Date.now()}.mp4`;
-    const filePath = path.join(DOWNLOAD_DIR, filename);
-
-    logger.info(`[INSTAGRAM] Downloading to: ${filePath}`);
-
-    if (!metadata.downloadUrl) {
-      throw new Error('No downloadable content found');
-    }
-
-    const response = await axios.get(metadata.downloadUrl, {
-      responseType: 'stream',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      },
-      timeout: 30000
-    });
-
-    return new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(filePath);
-      response.data.pipe(writeStream);
-
-      writeStream.on('finish', () => {
-        const fileSize = fs.statSync(filePath).size;
-        logger.info(`[INSTAGRAM] Download complete: ${filename}`);
-        resolve({
-          success: true,
-          filename,
-          downloadUrl: `/downloads/${filename}`,
-          filesize: fileSize,
-          platform: 'instagram',
-          title: metadata.title,
-          uploader: metadata.uploader
-        });
-      });
-
-      writeStream.on('error', (err) => {
-        logger.error(`[INSTAGRAM] Write error: ${err.message}`);
-        fs.unlink(filePath, () => {});
-        reject(new Error('Failed to download content'));
-      });
-    });
-  } catch (error) {
-    logger.error(`[INSTAGRAM] Download failed: ${error.message}`);
-    throw error;
-  }
-};
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// TIKTOK HANDLER
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const getTiktokInfo = async (url) => {
-  try {
-    logger.info(`[TIKTOK] Fetching info for: ${url}`);
-
-    // Extract video ID from TikTok URL
-    const videoId = url.match(/\/video\/(\d+)/) || url.match(/v\/(\d+)/) || url.match(/\.(\d+)/);
-    if (!videoId) throw new Error('Could not extract TikTok video ID');
-
-    // Method 1: Using tiktok-downloader if available
-    if (TikTokScraper) {
-      try {
-        const data = await TikTokScraper.getVideo({ url });
-        
-        return {
-          success: true,
-          platform: 'tiktok',
-          title: data.description || 'TikTok Video',
-          description: data.description || null,
-          thumbnail: data.cover,
-          uploader: data.author?.name || 'Unknown',
-          uploadDate: data.created_time ? new Date(data.created_time * 1000).toISOString() : null,
-          duration: data.duration || null,
-          views: data.statistics?.play_count || null,
-          likes: data.statistics?.digg_count || null,
-          comments: data.statistics?.comment_count || null,
-          shares: data.statistics?.share_count || null,
-          downloadUrl: data.video?.downloadAddr || data.video?.playAddr,
-          downloadUrlNoWatermark: data.video?.dynamicCover,
-          webpage_url: url
-        };
-      } catch (tikTokError) {
-        logger.warn(`[TIKTOK] tiktok-downloader failed: ${tikTokError.message}`);
-      }
-    }
-
-    // Method 2: Using TikTok's oEmbed endpoint
-    const oEmbedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`;
-    const response = await axios.get(oEmbedUrl, { timeout: 10000 });
-    const data = response.data;
-
-    // Method 3: Fallback to alternative API
-    const apiResponse = await axios.get(`https://api.tiktok.com/v1/post?url=${encodeURIComponent(url)}`, {
-      timeout: 10000,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
-    }).catch(() => ({ data: null }));
-
-    return {
-      success: true,
-      platform: 'tiktok',
-      title: apiResponse.data?.title || data.title || 'TikTok Video',
-      description: apiResponse.data?.description || data.title || null,
-      thumbnail: data.thumbnail_url,
-      uploader: data.author_name || 'Unknown',
-      uploadDate: null,
-      duration: null,
-      downloadUrl: apiResponse.data?.video_url || null,
-      webpage_url: url
-    };
-  } catch (error) {
-    logger.error(`[TIKTOK] Failed to fetch info: ${error.message}`);
-    throw new Error(`TikTok: ${error.message}`);
-  }
-};
-
-const downloadTiktok = async (url) => {
-  try {
-    const metadata = await getTiktokInfo(url);
-    const title = metadata.title || 'tiktok_video';
-    const safeTitle = sanitizeFilename(title).slice(0, 80);
-    const filename = `${safeTitle}_${Date.now()}.mp4`;
-    const filePath = path.join(DOWNLOAD_DIR, filename);
-
-    logger.info(`[TIKTOK] Downloading to: ${filePath}`);
-
-    if (!metadata.downloadUrl) {
-      throw new Error('No downloadable content found');
-    }
-
-    const response = await axios.get(metadata.downloadUrl, {
-      responseType: 'stream',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      },
-      timeout: 30000
-    });
-
-    return new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(filePath);
-      response.data.pipe(writeStream);
-
-      writeStream.on('finish', () => {
-        const fileSize = fs.statSync(filePath).size;
-        logger.info(`[TIKTOK] Download complete: ${filename}`);
-        resolve({
-          success: true,
-          filename,
-          downloadUrl: `/downloads/${filename}`,
-          filesize: fileSize,
-          platform: 'tiktok',
-          title: metadata.title,
-          uploader: metadata.uploader
-        });
-      });
-
-      writeStream.on('error', (err) => {
-        logger.error(`[TIKTOK] Write error: ${err.message}`);
-        fs.unlink(filePath, () => {});
-        reject(new Error('Failed to download content'));
-      });
-    });
-  } catch (error) {
-    logger.error(`[TIKTOK] Download failed: ${error.message}`);
-    throw error;
-  }
-};
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// SNAPCHAT HANDLER (Limited support - requires browser automation)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const getSnapchatInfo = async (url) => {
-  try {
-    logger.info(`[SNAPCHAT] Fetching info for: ${url}`);
-
-    // Snapchat doesn't provide official download capabilities
-    // The following is informational only
-    const username = url.match(/(?:add|username)=([^&]+)/) || url.match(/\/([^/?]+)$/);
-    
-    if (!username) {
-      throw new Error('Could not extract Snapchat username or story ID');
-    }
-
-    return {
-      success: true,
-      platform: 'snapchat',
-      title: 'Snapchat Story/Content',
-      description: 'Snapchat content cannot be downloaded directly due to platform restrictions',
-      thumbnail: null,
-      uploader: username[1],
-      uploadDate: null,
-      duration: null,
-      views: null,
-      downloadUrl: null,
-      webpage_url: url,
-      note: 'Snapchat actively restricts content downloading. Consider using screen recording instead.'
-    };
-  } catch (error) {
-    logger.error(`[SNAPCHAT] Failed to fetch info: ${error.message}`);
-    throw new Error(`Snapchat: ${error.message}`);
-  }
-};
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // UTILITY FUNCTIONS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const sanitizeFilename = (filename) => {
   return filename
-    .replace(/[^a-zA-Z0-9_\-]/g, '_')
+    .replace(/[^a-zA-Z0-9_\-\s]/g, '_')
+    .replace(/\s+/g, '_')
     .replace(/_+/g, '_')
-    .replace(/^_+|_+$/g, '');
+    .replace(/^_+|_+$/g, '')
+    .substring(0, 100);
 };
 
 const formatDuration = (seconds) => {
@@ -509,6 +77,340 @@ const formatDuration = (seconds) => {
   return `${minutes}:${String(secs).padStart(2, '0')}`;
 };
 
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// YT-DLP UNIVERSAL DOWNLOADER (Works for YouTube, Instagram, TikTok)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const getInfoWithYtDlp = async (url) => {
+  try {
+    logger.info(`Fetching info with yt-dlp for: ${url}`);
+    
+    const command = `yt-dlp --dump-json --no-warnings "${url}"`;
+    const { stdout } = await execAsync(command, { maxBuffer: 1024 * 1024 * 10 });
+    
+    const info = JSON.parse(stdout);
+    
+    return {
+      success: true,
+      platform: info.extractor_key?.toLowerCase() || detectPlatform(url),
+      title: info.title || 'Unknown',
+      description: info.description || null,
+      thumbnail: info.thumbnail || null,
+      uploader: info.uploader || info.channel || 'Unknown',
+      uploadDate: info.upload_date || null,
+      duration: info.duration || null,
+      durationFormatted: formatDuration(info.duration),
+      views: info.view_count || null,
+      likes: info.like_count || null,
+      comments: info.comment_count || null,
+      webpage_url: url,
+      isPlayable: true
+    };
+  } catch (error) {
+    logger.error(`yt-dlp info error: ${error.message}`);
+    throw error;
+  }
+};
+
+const downloadWithYtDlp = async (url, platform) => {
+  try {
+    logger.info(`Downloading with yt-dlp: ${url}`);
+    
+    const timestamp = Date.now();
+    const outputTemplate = path.join(DOWNLOAD_DIR, `${platform}_%(title).50s_${timestamp}.%(ext)s`);
+    
+    // Build command based on platform
+    let command = `yt-dlp -f best --no-warnings -o "${outputTemplate}" "${url}"`;
+    
+    if (platform === 'instagram') {
+      command = `yt-dlp --no-warnings -o "${outputTemplate}" "${url}"`;
+    } else if (platform === 'tiktok') {
+      command = `yt-dlp --no-warnings -o "${outputTemplate}" "${url}"`;
+    }
+    
+    logger.info(`Executing: ${command}`);
+    const { stdout, stderr } = await execAsync(command, { 
+      maxBuffer: 1024 * 1024 * 50,
+      timeout: 120000 // 2 minutes timeout
+    });
+    
+    logger.info(`yt-dlp output: ${stdout}`);
+    if (stderr) logger.warn(`yt-dlp stderr: ${stderr}`);
+    
+    // Find the downloaded file
+    const files = fs.readdirSync(DOWNLOAD_DIR)
+      .filter(f => f.startsWith(platform) && f.includes(timestamp.toString()))
+      .sort((a, b) => {
+        const statA = fs.statSync(path.join(DOWNLOAD_DIR, a));
+        const statB = fs.statSync(path.join(DOWNLOAD_DIR, b));
+        return statB.mtimeMs - statA.mtimeMs;
+      });
+    
+    if (files.length === 0) {
+      throw new Error('Download completed but file not found');
+    }
+    
+    const filename = files[0];
+    const filePath = path.join(DOWNLOAD_DIR, filename);
+    const fileSize = fs.statSync(filePath).size;
+    
+    logger.info(`Downloaded: ${filename} (${formatFileSize(fileSize)})`);
+    
+    return {
+      success: true,
+      filename,
+      downloadUrl: `/downloads/${filename}`,
+      filesize: fileSize,
+      platform
+    };
+  } catch (error) {
+    logger.error(`yt-dlp download error: ${error.message}`);
+    throw error;
+  }
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// YOUTUBE HANDLER (play-dl as primary, yt-dlp as fallback)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const extractYoutubeVideoId = (url) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
+const getYoutubeInfo = async (url) => {
+  try {
+    logger.info(`Fetching YouTube metadata for: ${url}`);
+    
+    try {
+      const videoId = extractYoutubeVideoId(url);
+      if (!videoId) throw new Error('Invalid YouTube URL');
+      
+      const info = await play.video_info(url);
+      const videoDetails = info.video_details;
+      
+      return {
+        success: true,
+        platform: 'youtube',
+        title: videoDetails.title,
+        duration: videoDetails.durationInSec,
+        durationFormatted: videoDetails.durationRaw,
+        thumbnail: videoDetails.thumbnails?.[0]?.url || null,
+        uploader: videoDetails.channel?.name || 'Unknown',
+        uploadDate: videoDetails.uploadedAt || null,
+        description: videoDetails.description || null,
+        views: videoDetails.views || 0,
+        isPlayable: true,
+        videoId: videoId,
+        webpage_url: url
+      };
+    } catch (playDlError) {
+      logger.warn(`play-dl failed, trying yt-dlp: ${playDlError.message}`);
+      if (ytDlpAvailable) {
+        return await getInfoWithYtDlp(url);
+      }
+      throw playDlError;
+    }
+  } catch (error) {
+    logger.error(`YouTube info error: ${error.message}`);
+    throw new Error(`YouTube: ${error.message}`);
+  }
+};
+
+const downloadYoutube = async (url, quality = '360p') => {
+  try {
+    logger.info(`Starting YouTube download: ${url}`);
+    
+    try {
+      const metadata = await getYoutubeInfo(url);
+      const safeTitle = sanitizeFilename(metadata.title);
+      const filename = `${safeTitle}_${Date.now()}.mp4`;
+      const filePath = path.join(DOWNLOAD_DIR, filename);
+
+      const stream = await play.stream(url, {
+        quality: 2,
+        discordPlayerCompatibility: false
+      });
+
+      const writeStream = fs.createWriteStream(filePath);
+      
+      return new Promise((resolve, reject) => {
+        stream.stream.pipe(writeStream);
+
+        stream.stream.on('error', (err) => {
+          logger.error(`Stream error: ${err.message}`);
+          fs.unlink(filePath, () => {});
+          reject(err);
+        });
+
+        writeStream.on('finish', () => {
+          const fileSize = fs.statSync(filePath).size;
+          logger.info(` YouTube download complete: ${filename}`);
+          
+          resolve({
+            success: true,
+            filename,
+            downloadUrl: `/downloads/${filename}`,
+            filesize: fileSize,
+            platform: 'youtube',
+            title: metadata.title,
+            uploader: metadata.uploader,
+            thumbnail: metadata.thumbnail
+          });
+        });
+
+        writeStream.on('error', reject);
+      });
+    } catch (playDlError) {
+      logger.warn(`play-dl failed, trying yt-dlp: ${playDlError.message}`);
+      if (ytDlpAvailable) {
+        return await downloadWithYtDlp(url, 'youtube');
+      }
+      throw playDlError;
+    }
+  } catch (error) {
+    logger.error(`YouTube download error: ${error.message}`);
+    throw error;
+  }
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// INSTAGRAM HANDLER (yt-dlp only - most reliable)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const getInstagramInfo = async (url) => {
+  try {
+    logger.info(`Fetching Instagram info for: ${url}`);
+    
+    if (ytDlpAvailable) {
+      return await getInfoWithYtDlp(url);
+    }
+    
+    // Fallback basic info
+    const shortcode = url.match(/\/(?:p|reel)\/([A-Za-z0-9_-]+)/)?.[1];
+    return {
+      success: true,
+      platform: 'instagram',
+      title: 'Instagram Content',
+      description: 'Instagram post or reel',
+      thumbnail: null,
+      uploader: 'Instagram User',
+      webpage_url: url,
+      type: url.includes('/reel/') ? 'reel' : 'post',
+      shortcode,
+      note: 'Install yt-dlp for full functionality: pip install yt-dlp'
+    };
+  } catch (error) {
+    logger.error(`Instagram info error: ${error.message}`);
+    throw new Error(`Instagram: ${error.message}`);
+  }
+};
+
+const downloadInstagram = async (url) => {
+  try {
+    logger.info(`Starting Instagram download: ${url}`);
+    
+    if (!ytDlpAvailable) {
+      throw new Error('yt-dlp is required for Instagram downloads. Install with: pip install yt-dlp');
+    }
+    
+    return await downloadWithYtDlp(url, 'instagram');
+  } catch (error) {
+    logger.error(`Instagram download error: ${error.message}`);
+    throw new Error(`Instagram download failed: ${error.message}`);
+  }
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TIKTOK HANDLER (yt-dlp only - most reliable)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const getTiktokInfo = async (url) => {
+  try {
+    logger.info(`Fetching TikTok info for: ${url}`);
+    
+    if (ytDlpAvailable) {
+      return await getInfoWithYtDlp(url);
+    }
+    
+    // Fallback basic info
+    return {
+      success: true,
+      platform: 'tiktok',
+      title: 'TikTok Video',
+      description: 'TikTok video content',
+      thumbnail: null,
+      uploader: 'TikTok User',
+      webpage_url: url,
+      note: 'Install yt-dlp for full functionality: pip install yt-dlp'
+    };
+  } catch (error) {
+    logger.error(`TikTok info error: ${error.message}`);
+    throw new Error(`TikTok: ${error.message}`);
+  }
+};
+
+const downloadTiktok = async (url, watermark = false) => {
+  try {
+    logger.info(`Starting TikTok download: ${url}`);
+    
+    if (!ytDlpAvailable) {
+      throw new Error('yt-dlp is required for TikTok downloads. Install with: pip install yt-dlp');
+    }
+    
+    return await downloadWithYtDlp(url, 'tiktok');
+  } catch (error) {
+    logger.error(`TikTok download error: ${error.message}`);
+    throw new Error(`TikTok download failed: ${error.message}`);
+  }
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SNAPCHAT HANDLER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const getSnapchatInfo = async (url) => {
+  if (ytDlpAvailable) {
+    try {
+      return await getInfoWithYtDlp(url);
+    } catch (e) {
+      logger.warn(`Snapchat yt-dlp failed: ${e.message}`);
+    }
+  }
+  
+  return {
+    success: true,
+    platform: 'snapchat',
+    title: 'Snapchat Content',
+    description: 'Snapchat Spotlight or Story',
+    thumbnail: null,
+    uploader: 'Snapchat User',
+    webpage_url: url,
+    note: 'Snapchat content may have restrictions'
+  };
+};
+
+const downloadSnapchat = async (url) => {
+  if (ytDlpAvailable) {
+    try {
+      return await downloadWithYtDlp(url, 'snapchat');
+    } catch (e) {
+      logger.error(`Snapchat download failed: ${e.message}`);
+    }
+  }
+  
+  throw new Error('Snapchat downloads require yt-dlp. Install with: pip install yt-dlp');
+};
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // MAIN PUBLIC FUNCTIONS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -518,6 +420,7 @@ const getInfo = async (url) => {
     throw new Error('Invalid URL provided');
   }
 
+  logger.info(`Analyze request for URL: ${url}`);
   const platform = detectPlatform(url);
 
   switch (platform) {
@@ -534,24 +437,25 @@ const getInfo = async (url) => {
   }
 };
 
-const downloadMedia = async (url, quality = 'best') => {
+const downloadMedia = async (url, options = {}) => {
   if (!isValidUrl(url)) {
     throw new Error('Invalid URL provided');
   }
 
+  logger.info(`Download request for URL: ${url}`);
   const platform = detectPlatform(url);
 
   switch (platform) {
     case 'youtube':
-      return await downloadYoutube(url, quality);
+      return await downloadYoutube(url, options.quality);
     case 'instagram':
       return await downloadInstagram(url);
     case 'tiktok':
-      return await downloadTiktok(url);
+      return await downloadTiktok(url, options.watermark);
     case 'snapchat':
-      throw new Error('Snapchat content cannot be downloaded directly due to platform restrictions');
+      return await downloadSnapchat(url);
     default:
-      throw new Error(`Platform '${platform}' is not currently supported`);
+      throw new Error(`Platform '${platform}' is not currently supported for downloads`);
   }
 };
 
@@ -562,12 +466,5 @@ module.exports = {
   DOWNLOAD_DIR,
   sanitizeFilename,
   formatDuration,
-  // Expose individual platform handlers for advanced usage
-  getYoutubeInfo,
-  downloadYoutube,
-  getInstagramInfo,
-  downloadInstagram,
-  getTiktokInfo,
-  downloadTiktok,
-  getSnapchatInfo
+  ytDlpAvailable
 };

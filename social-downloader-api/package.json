@@ -1,0 +1,45 @@
+{
+  "name": "social-downloader-api",
+  "version": "2.0.0",
+  "description": "Multi-platform social media downloader API supporting YouTube, Instagram, TikTok, and Snapchat",
+  "main": "app.js",
+  "type": "commonjs",
+  "keywords": [
+    "youtube",
+    "instagram",
+    "tiktok",
+    "snapchat",
+    "downloader",
+    "api",
+    "social-media"
+  ],
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@distube/ytdl-core": "^4.12.2",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.40.0",
+    "puppeteer": "^21.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
